@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b19d39296db249d49ea371c603ffc5c6, type: 3}
+  m_Name: DoorSounds
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectR.DoorSounds
+  open: {fileID: 8300000, guid: 625702a2cba54b7f95b11c68061adb16, type: 3}
+  slowOpen: {fileID: 8300000, guid: 67c98725abfa47539c441a47b263c433, type: 3}
+  close: {fileID: 8300000, guid: 20b296aabd154676acc175fb2073131c, type: 3}
+  locked: {fileID: 8300000, guid: ccec379217304e8eb736a548d1a813a8, type: 3}
+  lockedVolume: 1
+  openVolume: 0.7
+  closeVolume: 0.8
+  slowBelowSpeed: 100
+  pitchRange: {x: 0.95, y: 1.05}

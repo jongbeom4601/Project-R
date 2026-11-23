@@ -1,0 +1,35 @@
+{
+    "name": "ProjectR",
+    "maps": [
+        {
+            "name": "Gameplay",
+            "id": "b47b16ef-2541-475f-9a08-0d12aa0db86e",
+            "actions": [
+                { "name": "Move", "type": "Value", "id": "782ae623-ac41-40a5-9a38-e9235334fa68", "expectedControlType": "Vector2" },
+                { "name": "Look", "type": "PassThrough", "id": "284667d1-e7df-4f68-b63c-3c8b5668452a", "expectedControlType": "Vector2" },
+                { "name": "Interact", "type": "Button", "id": "73ddc0bb-2e43-4f2b-9545-bf81a6a946f1", "expectedControlType": "Button" },
+                { "name": "Pause", "type": "Button", "id": "286736bc-20fa-4770-9d55-7c8e4779aa74", "expectedControlType": "Button" }
+            ],
+            "bindings": [
+                { "name": "WASD", "id": "6716ff75-ab29-4edb-b52c-d26bb0236772", "path": "2DVector", "groups": "KeyboardMouse", "action": "Move", "isComposite": true },
+                { "name": "up", "id": "05e16460-59d5-4bf8-9dd8-84c5736598dc", "path": "<Keyboard>/w", "groups": "KeyboardMouse", "action": "Move", "isPartOfComposite": true },
+                { "name": "down", "id": "f6946399-c477-4de2-b39e-fc5eaaab0213", "path": "<Keyboard>/s", "groups": "KeyboardMouse", "action": "Move", "isPartOfComposite": true },
+                { "name": "left", "id": "0f356368-e575-4ef8-9181-bca208c245ce", "path": "<Keyboard>/a", "groups": "KeyboardMouse", "action": "Move", "isPartOfComposite": true },
+                { "name": "right", "id": "5e3df3e6-4528-458a-a72b-fec7efc74e0f", "path": "<Keyboard>/d", "groups": "KeyboardMouse", "action": "Move", "isPartOfComposite": true },
+                { "id": "2dc7fdbe-280b-4923-8a1b-5d4ad5725957", "path": "<Mouse>/delta", "groups": "KeyboardMouse", "action": "Look" },
+                { "id": "debe008e-1651-42cf-bb3e-d42287e09b1a", "path": "<Keyboard>/e", "groups": "KeyboardMouse", "action": "Interact" },
+                { "id": "5bccb0c1-8637-41f3-a3bf-29c74a744b4a", "path": "<Keyboard>/escape", "groups": "KeyboardMouse", "action": "Pause" }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "KeyboardMouse",
+            "bindingGroup": "KeyboardMouse",
+            "devices": [
+                { "devicePath": "<Keyboard>", "isOptional": false, "isOR": false },
+                { "devicePath": "<Mouse>", "isOptional": false, "isOR": false }
+            ]
+        }
+    ]
+}
