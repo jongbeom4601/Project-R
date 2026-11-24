@@ -3,6 +3,8 @@ using UnityEngine.Rendering.Universal;
 
 namespace ProjectR
 {
+    // The route runs starting bedroom -> Apartment 01 -> ... -> Apartment 08. Each apartment is entered through its
+    // front door and left through its bedroom-1 doorway, which opens onto the next apartment's front door.
     [DefaultExecutionOrder(-20)]
     public sealed class ApartmentRoute : MonoBehaviour
     {
@@ -32,7 +34,8 @@ namespace ProjectR
         private readonly System.Collections.Generic.List<Collider> suppressedColliders = new();
 
         // Living room, hallway, dining and kitchen of an apartment, in its own local space.
-        // Stops short of the front-door frame (x > 16) so the shared doorway keeps all of its collision.
+        // Stops short of the bedroom-1 doorway (x > 16), where the next apartment's front-door frame sits,
+        // so the shared doorway keeps all of its collision.
         private static readonly Bounds LivingZone = new(new Vector3(11.6f, 1.2f, -4.05f), new Vector3(8.8f, 2.5f, 9.7f));
 
         private void Awake()
@@ -67,8 +70,9 @@ namespace ProjectR
                 ApartmentExit entrance = exits[current - 1];
                 if (entrance.Crossed(previousCenter, center, false))
                 {
+                    // Back through the front door: the player is in the previous apartment, by its bedroom-1 doorway.
                     current--;
-                    kitchenOwner = foyerFloors[current] != null ? current + 1 : current;
+                    kitchenOwner = current;
                     previousIsOpen = false;
                     activeSpacesChanged = true;
                 }
@@ -80,17 +84,20 @@ namespace ProjectR
             }
             else if (current < exits.Length && exits[current].Crossed(previousCenter, center, true))
             {
+                // Through the front door into the next apartment's entry. Its kitchen overlaps the apartment behind
+                // that door, so the one the player just left keeps the kitchen until they step out of the entry.
                 current++;
-                kitchenOwner = current;
+                kitchenOwner = current - 1;
                 previousIsOpen = true;
                 activeSpacesChanged = true;
             }
 
-            if (current < exits.Length)
+            // Stepping into the entry hands the kitchen to the apartment beyond the front door; stepping out takes it back.
+            if (current > 0 && current <= exits.Length)
             {
-                int crossing = exits[current].CrossedFoyerBoundary(foyerFloors[current], previousCenter, center);
+                int crossing = exits[current - 1].CrossedFoyerBoundary(foyerFloors[current], previousCenter, center);
                 if (crossing != 0)
-                    kitchenOwner = crossing > 0 ? current + 1 : current;
+                    kitchenOwner = crossing > 0 ? current - 1 : current;
             }
 
             if (activeSpacesChanged)
@@ -105,7 +112,7 @@ namespace ProjectR
         {
             kitchenRendering = Resources.Load<KitchenOverlapRendering>(KitchenOverlapRendering.ResourceName);
             kitchenRooms = new KitchenOverlapRendering.Room[spaces.Length];
-            foyerFloors = new BoxCollider[exits.Length];
+            foyerFloors = new BoxCollider[spaces.Length];
             if (kitchenRendering == null)
                 return;
 
@@ -113,7 +120,7 @@ namespace ProjectR
             {
                 uint layer = RoomLightLayer(i);
                 SetRenderingLayers(spaces[i], layer, RoomGeometryLayers(i));
-                if (i > 0 && i < exits.Length && parts[i] != null)
+                if (i > 0 && parts[i] != null)
                     foyerFloors[i] = parts[i].FoyerFloor;
             }
 
@@ -253,14 +260,16 @@ namespace ProjectR
                 var view = KitchenOverlapRendering.View.Full;
                 if (kitchenOwner > 0 && spaces[i].activeSelf)
                 {
+                    // The surface sets are named by where the owner stands: "Previous" is through the bedroom-1 doorway,
+                    // "Next" is through the front door. The next apartment along the route sits behind the front door.
                     if (i == kitchenOwner + 1)
-                        view = KitchenOverlapRendering.View.FromPrevious;
-                    else if (i == kitchenOwner - 1)
                         view = KitchenOverlapRendering.View.FromNext;
+                    else if (i == kitchenOwner - 1)
+                        view = KitchenOverlapRendering.View.FromPrevious;
                 }
 
                 if (spaces[i].activeSelf && kitchenRooms[i] == null && parts[i] != null)
-                    kitchenRooms[i] = kitchenRendering.Bind(parts[i], i > 1);
+                    kitchenRooms[i] = kitchenRendering.Bind(parts[i], i < spaces.Length - 1); // trims the bedroom-1 wall where the next apartment's entry meets it
 
                 bool preserveFoyer = i == current && view == KitchenOverlapRendering.View.FromNext;
                 kitchenRooms[i]?.SetView(view, preserveFoyer);
