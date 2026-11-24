@@ -36,7 +36,8 @@ namespace ProjectR
             if (unlockStage != 2)
                 return CurrentStage >= unlockStage;
 
-            return CurrentStage < 2 || (space != null && space.IsExtended);
+            // Stage-02 doors wait for the corridor change; with no corridor change in the scene they are never held.
+            return CurrentStage < 2 || space == null || space.IsExtended;
         }
 
         public void OnLockedDoorInteracted(DoorController door)

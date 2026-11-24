@@ -62,6 +62,8 @@ namespace ProjectR
         public bool IsPassageLocked => passageLocked;
         // Raised when the player presses E on this door while it is locked for them.
         public event System.Action<DoorController> LockedTried;
+        // Raised when the door starts to open from a player's E press.
+        public event System.Action<DoorController> OpenStarted;
         internal bool PassageAvailable { private get; set; } = true;
         public bool CanInteractFrom(CharacterController interactor) =>
             IsLockedFor(interactor) || state == State.Open || (state == State.Closed && CanOpen());
@@ -132,6 +134,7 @@ namespace ProjectR
                     sounds.PlayOpen(DoorAudio, OpeningSpeed);
                 if (startsStage && progression != null)
                     progression.BeginDoorStage(unlockStage);
+                OpenStarted?.Invoke(this);
             }
             else
             {
@@ -197,6 +200,25 @@ namespace ProjectR
             HasOpened |= state == State.Open;
             if (state == State.Closed)
                 LockIfPassedThrough();
+        }
+
+        // Silences this door's open, close and rattle sounds at once (for a hard cut to black).
+        public void StopSounds()
+        {
+            if (doorAudio != null)
+                doorAudio.Stop();
+            if (lockedSound != null)
+                lockedSound.Stop();
+        }
+
+        // Lifts the lock a one-way door set behind the player, so it can be opened again from the inside.
+        public void ReleasePassageLock()
+        {
+            if (!passageLocked)
+                return;
+            passageLocked = false;
+            if (returnBarrier != null)
+                returnBarrier.isTrigger = true;
         }
 
         // A one-way door locks only once it has shut with the player on the far side.

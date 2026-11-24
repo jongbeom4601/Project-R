@@ -152,6 +152,15 @@ namespace ProjectR
             progression.FinishClimax();
         }
 
+        // Total darkness for scripted scares elsewhere; EndBlackout brings the lights back.
+        internal void BeginBlackout()
+        {
+            if (!IsBlackout)
+                Blackout();
+        }
+
+        internal void EndBlackout() => RestoreLights();
+
         private void Blackout()
         {
             lightStates = new bool[sceneLights.Length];

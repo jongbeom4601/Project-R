@@ -22,17 +22,30 @@ namespace ProjectR
         [SerializeField, Tooltip("Menu items and settings; must cover Korean.")] private Font uiFont;
         [SerializeField] private AudioClip uiHover;
         [SerializeField] private AudioClip uiSelect;
+        [Header("Start fade")]
+        [SerializeField, Min(0f), Tooltip("Title to black after START.")] private float startFadeOut = .7f;
+        [SerializeField, Min(0f), Tooltip("Black held before the game appears.")] private float startHold = .25f;
+        [SerializeField, Min(0f), Tooltip("Black to the game.")] private float startFadeIn = 1.1f;
+        [SerializeField, Tooltip("Shown on the black screen before play. Empty: no notice.")]
+        private string startNotice = "이어폰을 착용하고, 실내 조명을 끈 뒤 플레이하는 것을 권장합니다.";
+        [SerializeField, Min(0f), Tooltip("How long the notice stays fully visible; any key or click skips it.")]
+        private float noticeHold = 2.5f;
+        [SerializeField, Min(0f)] private float noticeFade = .6f;
 
         private InputAction pause;
         private bool pauseRequested;
         private float fade;
+        private float endingShownAt;
+        private float curtain; // black over everything while the game starts
+        private float noticeAlpha;
+        private bool starting;
         private Screen screen = Screen.Title;
         private Screen settingsReturn = Screen.Title;
         private AudioSource previewSource;
         private float lastPreview;
 
         private bool korean;
-        private GUIStyle titleStyle, headingStyle, itemStyle, itemSpacedStyle, labelStyle, valueStyle, hintStyle, sliderStyle, thumbStyle;
+        private GUIStyle titleStyle, headingStyle, itemStyle, itemSpacedStyle, labelStyle, valueStyle, hintStyle, subtitleStyle, creditStyle, noticeStyle, sliderStyle, thumbStyle;
 
         public bool IsEnding { get; private set; }
         public bool EndingShown { get; private set; }
@@ -67,6 +80,8 @@ namespace ProjectR
             if (pauseRequested)
             {
                 pauseRequested = false;
+                if (starting)
+                    return;
                 switch (screen)
                 {
                     case Screen.Playing: SetScreen(Screen.Paused); break;
@@ -114,6 +129,49 @@ namespace ProjectR
             player.SetInputBlocked(!playing);
         }
 
+        // START: the title fades to black, the game takes over in the dark, then fades in.
+        private IEnumerator StartGame()
+        {
+            starting = true;
+            while (curtain < 1f)
+            {
+                curtain = startFadeOut > 0f ? Mathf.MoveTowards(curtain, 1f, Time.unscaledDeltaTime / startFadeOut) : 1f;
+                yield return null;
+            }
+            SetScreen(Screen.Playing);
+            player.SetInputBlocked(true); // still dark: no walking off before the picture is back
+
+            if (!string.IsNullOrEmpty(startNotice))
+            {
+                yield return FadeNotice(1f);
+                for (float held = 0f; held < noticeHold && !SkipPressed(); held += Time.unscaledDeltaTime)
+                    yield return null;
+                yield return FadeNotice(0f);
+            }
+
+            yield return new WaitForSecondsRealtime(startHold);
+            player.SetInputBlocked(false);
+            while (curtain > 0f)
+            {
+                curtain = startFadeIn > 0f ? Mathf.MoveTowards(curtain, 0f, Time.unscaledDeltaTime / startFadeIn) : 0f;
+                yield return null;
+            }
+            starting = false;
+        }
+
+        private IEnumerator FadeNotice(float target)
+        {
+            while (!Mathf.Approximately(noticeAlpha, target))
+            {
+                noticeAlpha = noticeFade > 0f ? Mathf.MoveTowards(noticeAlpha, target, Time.unscaledDeltaTime / noticeFade) : target;
+                yield return null;
+            }
+        }
+
+        private static bool SkipPressed() =>
+            (Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame) ||
+            (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame);
+
         private void StageCompleted(int stage)
         {
             if (stage != 6 || IsEnding)
@@ -132,7 +190,31 @@ namespace ProjectR
                 fade = Mathf.MoveTowards(fade, 1f, Time.deltaTime / 1.65f);
                 yield return null;
             }
+            ShowEndingText();
+        }
+
+        // Ends the run from a scene that has already cut to black: hold the silence, then the demo ending.
+        public void EndFromBlackout(float silence)
+        {
+            if (IsEnding)
+                return;
+            IsEnding = true;
+            screen = Screen.Ending;
+            fade = 1f;
+            player.SetInputBlocked(true);
+            StartCoroutine(HoldThenShowEnding(silence));
+        }
+
+        private IEnumerator HoldThenShowEnding(float silence)
+        {
+            yield return new WaitForSecondsRealtime(silence);
+            ShowEndingText();
+        }
+
+        private void ShowEndingText()
+        {
             EndingShown = true;
+            endingShownAt = Time.unscaledTime;
         }
 
         private static void BackToTitle()
@@ -167,7 +249,10 @@ namespace ProjectR
         private void OnGUI()
         {
             if (screen == Screen.Playing)
+            {
+                DrawCurtain();
                 return;
+            }
             CreateStyles();
             itemId = 0;
 
@@ -192,6 +277,28 @@ namespace ProjectR
                 case Screen.Brightness: DrawBrightness(); break;
                 case Screen.Ending when EndingShown: DrawEnding(); break;
             }
+            DrawCurtain();
+            GUI.depth = previousDepth;
+        }
+
+        private void DrawCurtain()
+        {
+            if (curtain <= 0f)
+                return;
+            int previousDepth = GUI.depth;
+            GUI.depth = -200;
+            Fill(new Rect(0f, 0f, UnityEngine.Screen.width, UnityEngine.Screen.height), new Color(0f, 0f, 0f, curtain));
+            if (noticeAlpha > 0f)
+            {
+                CreateStyles();
+                Color previous = GUI.color;
+                GUI.color = new Color(1f, 1f, 1f, noticeAlpha);
+                float mid = UnityEngine.Screen.height * .5f;
+                GUI.Label(new Rect(0f, mid - 20f, UnityEngine.Screen.width, 40f), startNotice, noticeStyle);
+                GUI.color = new Color(1f, 1f, 1f, noticeAlpha * .5f);
+                GUI.Label(new Rect(0f, mid + 34f, UnityEngine.Screen.width, 26f), "아무 키나 눌러 건너뛰기", hintStyle);
+                GUI.color = previous;
+            }
             GUI.depth = previousDepth;
         }
 
@@ -202,11 +309,11 @@ namespace ProjectR
             float top = UnityEngine.Screen.height * .5f - 170f;
             DrawGameTitle(Left, top);
             float y = top + 150f;
-            if (Item(ref y, "START", true))
-                SetScreen(Screen.Playing);
-            if (Item(ref y, "SETTINGS", true))
+            if (Item(ref y, "시작") && !starting)
+                StartCoroutine(StartGame());
+            if (Item(ref y, "설정") && !starting)
                 SetScreen(Screen.Settings);
-            if (Item(ref y, "QUIT", true))
+            if (Item(ref y, "종료") && !starting)
                 QuitGame();
         }
 
@@ -224,13 +331,38 @@ namespace ProjectR
                 QuitGame();
         }
 
+        // Demo-version close, fading in one block after another: the logo, the project and a thank-you,
+        // the credit, then the way out.
         private void DrawEnding()
         {
-            float top = UnityEngine.Screen.height * .5f - 110f;
+            float since = Time.unscaledTime - endingShownAt;
+            Color previous = GUI.color;
+            float width = Mathf.Min(620f, UnityEngine.Screen.width - Left - 32f);
+            float top = UnityEngine.Screen.height * .5f - 220f;
+
+            GUI.color = new Color(1f, 1f, 1f, Mathf.Clamp01(since / 1.6f));
             DrawGameTitle(Left, top);
-            float y = top + 150f;
-            if (Item(ref y, T("타이틀로", "Title")))
-                BackToTitle();
+
+            GUI.color = new Color(1f, 1f, 1f, Mathf.Clamp01((since - 1.2f) / 1.2f));
+            float y = top + titleStyle.fontSize * 1.32f + 34f;
+            GUI.Label(new Rect(Left, y, width, 30f), "증강현실과 가상현실 텀프로젝트", subtitleStyle);
+            GUI.Label(new Rect(Left, y + 34f, width, 28f), "데모 버전을 플레이해주셔서 감사합니다.", labelStyle);
+
+            GUI.color = new Color(1f, 1f, 1f, Mathf.Clamp01((since - 2.2f) / 1.2f));
+            y += 104f;
+            Spaced(Left, y, "DEVELOPED BY", creditStyle, new Color(Ink.r, Ink.g, Ink.b, .55f), creditStyle.fontSize * .3f);
+            GUI.Label(new Rect(Left, y + 24f, width, 28f), "울산대 IT융합전공 20211999 이종범", labelStyle);
+
+            GUI.color = new Color(1f, 1f, 1f, Mathf.Clamp01((since - 3.2f) / .8f));
+            y += 92f;
+            if (since > 3.2f)
+            {
+                if (Item(ref y, "타이틀로"))
+                    BackToTitle();
+                if (Item(ref y, "게임 종료"))
+                    QuitGame();
+            }
+            GUI.color = previous;
         }
 
         private void DrawSettings()
@@ -325,6 +457,8 @@ namespace ProjectR
             x = Spaced(x, y, "PROJECT", titleStyle, Ink, spacing);
             x += titleStyle.fontSize * .45f;
             x = Spaced(x, y, "R", titleStyle, Blood, spacing);
+            x += titleStyle.fontSize * .4f;
+            Spaced(x, y + titleStyle.fontSize * .62f, "DEMO", creditStyle, new Color(Blood.r, Blood.g, Blood.b, .9f), creditStyle.fontSize * .45f);
             Fill(new Rect(Left + 2f, y + titleStyle.fontSize * 1.32f, 140f, 1f), new Color(Ink.r, Ink.g, Ink.b, .28f));
         }
 
@@ -439,7 +573,7 @@ namespace ProjectR
         private static void Fill(Rect rect, Color color)
         {
             Color previous = GUI.color;
-            GUI.color = color;
+            GUI.color = color * previous; // keeps any fade set around the call
             GUI.DrawTexture(rect, Texture2D.whiteTexture);
             GUI.color = previous;
         }
@@ -471,6 +605,11 @@ namespace ProjectR
             valueStyle.normal.textColor = new Color(Ink.r, Ink.g, Ink.b, .55f);
             hintStyle = new GUIStyle(labelStyle) { fontSize = 15, alignment = TextAnchor.MiddleCenter };
             hintStyle.normal.textColor = new Color(.6f, .6f, .58f);
+            subtitleStyle = new GUIStyle(labelStyle) { fontSize = 20 };
+            subtitleStyle.normal.textColor = new Color(Ink.r, Ink.g, Ink.b, .95f);
+            creditStyle = new GUIStyle(titleStyle) { fontSize = 15 }; // small capitals in the title face
+            noticeStyle = new GUIStyle(labelStyle) { fontSize = 21, alignment = TextAnchor.MiddleCenter };
+            noticeStyle.normal.textColor = new Color(Ink.r, Ink.g, Ink.b, .92f);
 
             sliderStyle = new GUIStyle { fixedHeight = 16f };
             thumbStyle = new GUIStyle { fixedWidth = 14f, fixedHeight = 14f, margin = new RectOffset(0, 0, 1, 0) };
