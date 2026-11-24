@@ -16301,7 +16301,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectR.HorrorEventManager
   playerBody: {fileID: 79010581}
   corridorDoor: {fileID: 1804470731}
-  lockedFoyerDoor: {fileID: 1675770959}
+  unlockingDoor: {fileID: 689981602}
   bedroomDoorScare: {fileID: 1804470734}
   space: {fileID: 616304618}
   transition: {fileID: 616304617}

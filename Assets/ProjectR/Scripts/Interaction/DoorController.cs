@@ -65,7 +65,7 @@ namespace ProjectR
             IsLockedFor(interactor) || state == State.Open || (state == State.Closed && CanOpen());
 
         public bool IsLockedFor(CharacterController interactor) => !PassageAvailable || passageLocked || lockedFromBothSides ||
-            (progression != null && progression.IsWaitingForFoyer(this)) ||
+            (progression != null && progression.IsWaitingForUnlockingDoor(this)) ||
             (lockedFromExitSide && state == State.Closed && SideOfDoor(interactor) >= 0f);
 
         private void Awake()

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Milestone = ProjectR.StageTrigger.Milestone;
 
 namespace ProjectR
@@ -10,12 +11,14 @@ namespace ProjectR
 
         [SerializeField] private CharacterController playerBody;
         [SerializeField] private DoorController corridorDoor;
-        [SerializeField] private DoorController lockedFoyerDoor;
+        [SerializeField, FormerlySerializedAs("lockedFoyerDoor"),
+         Tooltip("Locked door in the last apartment. Trying it after the bedroom-2 door has slammed unlocks the corridor door.")]
+        private DoorController unlockingDoor;
         [SerializeField] private BedroomDoorScare bedroomDoorScare;
         [SerializeField] private SpatialManager space;
         [SerializeField] private TransitionController transition;
 
-        private bool checkedFoyer;
+        private bool triedUnlockingDoor;
 
         public CharacterController PlayerBody => playerBody;
         public int CurrentStage { get; private set; }
@@ -25,8 +28,8 @@ namespace ProjectR
         public event Action<int> StageActivated;
         public event Action ClimaxRequested;
 
-        internal bool IsWaitingForFoyer(DoorController door) =>
-            door == corridorDoor && lockedFoyerDoor != null && !checkedFoyer;
+        internal bool IsWaitingForUnlockingDoor(DoorController door) =>
+            door == corridorDoor && unlockingDoor != null && !triedUnlockingDoor;
 
         public bool CanOpen(int unlockStage)
         {
@@ -38,10 +41,10 @@ namespace ProjectR
 
         public void OnLockedDoorInteracted(DoorController door)
         {
-            if (door == lockedFoyerDoor)
+            if (door == unlockingDoor)
             {
                 if (bedroomDoorScare == null || bedroomDoorScare.HasSlammed)
-                    checkedFoyer = true;
+                    triedUnlockingDoor = true;
                 return;
             }
 
