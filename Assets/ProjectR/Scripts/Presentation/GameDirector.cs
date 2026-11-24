@@ -34,7 +34,6 @@ namespace ProjectR
         private bool korean;
         private GUIStyle titleStyle, headingStyle, itemStyle, itemSpacedStyle, labelStyle, valueStyle, hintStyle, sliderStyle, thumbStyle;
 
-        public bool IsPaused => screen == Screen.Paused || (screen is Screen.Settings or Screen.Brightness && settingsReturn == Screen.Paused);
         public bool IsEnding { get; private set; }
         public bool EndingShown { get; private set; }
 

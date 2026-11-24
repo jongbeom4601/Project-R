@@ -33,8 +33,7 @@ namespace ProjectR
 
         private IEnumerator Play()
         {
-            if (openingSound != null)
-                distantCue.PlayOneShot(openingSound, openingVolume);
+            distantCue.PlayCue(openingSound, openingVolume);
             if (dimDuration > 0f)
             {
                 float original = lightToDim.intensity;
@@ -46,8 +45,7 @@ namespace ProjectR
             for (int i = 0; i < followUpCount; i++)
             {
                 yield return new WaitForSeconds(.37f);
-                if (followUpSound != null)
-                    nearCue.PlayOneShot(followUpSound, followUpVolume);
+                nearCue.PlayCue(followUpSound, followUpVolume);
             }
 
             if (followUpCount > 0)

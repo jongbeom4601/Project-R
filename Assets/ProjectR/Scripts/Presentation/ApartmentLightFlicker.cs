@@ -63,7 +63,12 @@ namespace ProjectR
                         fixture.RemainingOutages = Random.Range(1, 4);
                         // One pop per burst, so a quick run of outages does not machine-gun.
                         if (faultSound != null)
-                            AudioSource.PlayClipAtPoint(faultSound, fixture.Position, faultVolume * GameSettings.EffectsVolume);
+                        {
+                            // Kept under this always-active object, so a fixture in a switched-off apartment pops as before.
+                            if (fixture.Pop == null)
+                                fixture.Pop = AudioCue.CreatePointSource(transform, "Light Fault Pop");
+                            fixture.Pop.PlayAt(faultSound, fixture.Position, faultVolume * GameSettings.EffectsVolume);
+                        }
                     }
 
                     fixture.RemainingOutages--;
@@ -87,7 +92,11 @@ namespace ProjectR
         private void OnDisable()
         {
             foreach (Fixture fixture in flickering)
+            {
                 fixture.SetPower(true);
+                if (fixture.Pop != null)
+                    Destroy(fixture.Pop.gameObject);
+            }
             foreach (Fixture fixture in unpowered)
                 fixture.SetPower(true);
             flickering.Clear();
@@ -105,6 +114,7 @@ namespace ProjectR
             public Vector3 Position => light != null ? light.transform.position : Vector3.zero;
             public float Remaining { get; set; }
             public int RemainingOutages { get; set; }
+            public AudioSource Pop { get; set; }
 
             public Fixture(Light light)
             {

@@ -11,6 +11,7 @@ namespace ProjectR
         [SerializeField, Range(0f, 1f)] private float offVolume = .6f;
 
         private AudioSource hum;
+        private AudioSource pop;
         private bool wasOn;
 
         private bool IsOn => source != null && source.isActiveAndEnabled;
@@ -27,7 +28,11 @@ namespace ProjectR
         {
             bool on = IsOn;
             if (wasOn && !on && offSound != null)
-                AudioSource.PlayClipAtPoint(offSound, transform.position, offVolume * GameSettings.EffectsVolume);
+            {
+                if (pop == null)
+                    pop = AudioCue.CreatePointSource(transform, "Light Off Pop");
+                pop.PlayAt(offSound, transform.position, offVolume * GameSettings.EffectsVolume);
+            }
 
             wasOn = on;
             SyncHum();

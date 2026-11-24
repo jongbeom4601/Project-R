@@ -86,7 +86,7 @@ namespace ProjectR
             if (stage == 2)
                 hallCue = StartCoroutine(GuideToHall());
             else if (stage == 4)
-                PlayCue(roomCue, objectMovement, .28f);
+                roomCue.PlayCue(objectMovement, .28f);
         }
 
         private IEnumerator GuideToHall()
@@ -94,7 +94,7 @@ namespace ProjectR
             yield return new WaitForSeconds(.32f);
             for (int i = 0; i < 3; i++)
             {
-                PlayCue(houseCue, footstep, .52f);
+                houseCue.PlayCue(footstep, .52f);
                 yield return new WaitForSeconds(.39f);
             }
             hallCue = null;
@@ -115,12 +115,12 @@ namespace ProjectR
             }
             houseCue.Stop();
             roomCue.Stop();
-            PlayCue(corridorCue, footstep, .74f);
+            corridorCue.PlayCue(footstep, .74f);
             yield return new WaitForSeconds(.42f);
-            PlayCue(corridorCue, footstep, 1f);
+            corridorCue.PlayCue(footstep, 1f);
             yield return new WaitForSeconds(.30f);
             corridorExitBehindPlayer.TryClose(progression.PlayerBody, 390f);
-            PlayCue(slamSource, doorSlam, 1f);
+            slamSource.PlayCue(doorSlam, 1f);
 
             bool flickerWasEnabled = flickerLight.enabled;
             flickerLight.enabled = false;
@@ -137,7 +137,7 @@ namespace ProjectR
             corridorCue.Stop();
             slamSource.Stop();
             Blackout();
-            PlayCue(silenceCue, tinnitus, tinnitusVolume);
+            silenceCue.PlayCue(tinnitus, tinnitusVolume);
             yield return new WaitForSeconds(1.5f);
             RestoreLights();
             yield return new WaitForSeconds(.65f);
@@ -184,13 +184,6 @@ namespace ProjectR
                 blackoutView.clearFlags = clearFlags;
             }
             lightStates = null;
-        }
-
-        // Cues stay silent until a clip is assigned.
-        private static void PlayCue(AudioSource source, AudioClip clip, float volume)
-        {
-            if (source != null && clip != null)
-                source.PlayOneShot(clip, volume);
         }
 
         private void StageCompleted(int stage)
