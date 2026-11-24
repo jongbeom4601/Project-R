@@ -8,8 +8,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/ProjectR/Scenes/MVP.unity
     guid: 26e88a3492423ac40b5ca3e2368c0f89
-  - enabled: 0
-    path: Assets/ProjectR/Scenes/PoC01.unity
-    guid: 98396bd102dd42a581994e547138ee4e
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
