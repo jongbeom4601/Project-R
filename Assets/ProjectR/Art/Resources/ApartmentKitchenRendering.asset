@@ -3573,7 +3573,8 @@ MonoBehaviour:
   m_Name: ApartmentKitchenRendering
   m_EditorClassIdentifier: Assembly-CSharp::ProjectR.KitchenOverlapRendering
   surfaces:
-  - path: KitchenDining/Visuals/KitchenDiningFloor
+  - label: KitchenDining/Visuals/KitchenDiningFloor
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3584,7 +3585,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 7227786342889829291}
     arrivalMesh: {fileID: 0}
-  - path: KitchenDining/Visuals/KitchenDiningCeiling
+  - label: KitchenDining/Visuals/KitchenDiningCeiling
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3595,7 +3597,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 1527094117683872028}
     arrivalMesh: {fileID: 0}
-  - path: KitchenDining/Visuals/KitchenWest
+  - label: KitchenDining/Visuals/KitchenWest
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3606,7 +3609,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 8039350469838858218}
     arrivalMesh: {fileID: 0}
-  - path: KitchenDining/Visuals/KitchenUtilitySharedWall
+  - label: KitchenDining/Visuals/KitchenUtilitySharedWall
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 1.9196864}
       m_Extent: {x: 0.07500076, y: 1.425, z: 3.9236279}
@@ -3617,7 +3621,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: Utility/Visuals/UtilityFloor
+  - label: Utility/Visuals/UtilityFloor
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3628,7 +3633,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: Utility/Visuals/UtilityCeiling
+  - label: Utility/Visuals/UtilityCeiling
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3639,7 +3645,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: Utility/Visuals/UtilityDoorwayWall
+  - label: Utility/Visuals/UtilityDoorwayWall
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 1.425, z: 0}
       m_Extent: {x: 1.8057137, y: 1.425, z: 0.07500005}
@@ -3650,7 +3657,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/FloorAndCeiling/Ceiling 1
+  - label: LivingZonePlan/FloorAndCeiling/Ceiling 1
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3661,7 +3669,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: -8707982916334781686}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/FloorAndCeiling/Ceiling 3
+  - label: LivingZonePlan/FloorAndCeiling/Ceiling 3
+    isFoyer: 1
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3672,7 +3681,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 4911579005844510111}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/FloorAndCeiling/Ceiling 4
+  - label: LivingZonePlan/FloorAndCeiling/Ceiling 4
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3683,7 +3693,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 1239690199831524960}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/FloorAndCeiling/Recessed Entry Floor
+  - label: LivingZonePlan/FloorAndCeiling/Recessed Entry Floor
+    isFoyer: 1
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3694,7 +3705,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 4165746338242890462}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/FloorAndCeiling/FrontDoor Threshold
+  - label: LivingZonePlan/FloorAndCeiling/FrontDoor Threshold
+    isFoyer: 1
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3705,7 +3717,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: -8420403130778824649}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/FloorAndCeiling/Shared Zone Ceiling Surface
+  - label: LivingZonePlan/FloorAndCeiling/Shared Zone Ceiling Surface
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 11.61857, y: 2.375, z: -4.0692854}
       m_Extent: {x: 4.475, y: 0.075, z: 4.815}
@@ -3716,7 +3729,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 2692199196425860158}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Walls/FrontDoorWall/FrontDoor Lintel
+  - label: LivingZonePlan/Walls/FrontDoorWall/FrontDoor Lintel
+    isFoyer: 1
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3727,7 +3741,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: -3602830992042241540}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Walls/FrontDoorWall/Wall 1.2
+  - label: LivingZonePlan/Walls/FrontDoorWall/Wall 1.2
+    isFoyer: 1
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3738,7 +3753,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Walls/EntryEastWall/Wall 1.1
+  - label: LivingZonePlan/Walls/EntryEastWall/Wall 1.1
+    isFoyer: 1
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3749,7 +3765,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 2042921931431128449}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Walls/KitchenAndPantryWall/Wall 1.1
+  - label: LivingZonePlan/Walls/KitchenAndPantryWall/Wall 1.1
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3760,7 +3777,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: -664681496496409506}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Walls/KitchenWindowWall/KitchenWindow Sill
+  - label: LivingZonePlan/Walls/KitchenWindowWall/KitchenWindow Sill
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3771,7 +3789,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 8309586400418220361}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Walls/KitchenWindowWall/KitchenWindow Lintel
+  - label: LivingZonePlan/Walls/KitchenWindowWall/KitchenWindow Lintel
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3782,7 +3801,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 5216177161187239429}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Walls/KitchenWindowWall/Wall 1.1
+  - label: LivingZonePlan/Walls/KitchenWindowWall/Wall 1.1
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3793,7 +3813,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Walls/UtilityDoorWall/Wall 1.1
+  - label: LivingZonePlan/Walls/UtilityDoorWall/Wall 1.1
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3804,7 +3825,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Walls/Entry Base 2
+  - label: LivingZonePlan/Walls/Entry Base 2
+    isFoyer: 1
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3815,7 +3837,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 8780348014586575148}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Walls/Entry Base 4
+  - label: LivingZonePlan/Walls/Entry Base 4
+    isFoyer: 1
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3826,7 +3849,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Walls/Front Door Right Jamb
+  - label: LivingZonePlan/Walls/Front Door Right Jamb
+    isFoyer: 1
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3837,7 +3861,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Windows/Kitchen Window Sill
+  - label: LivingZonePlan/Windows/Kitchen Window Sill
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3848,7 +3873,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 672499986128934609}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Windows/Kitchen Window Head
+  - label: LivingZonePlan/Windows/Kitchen Window Head
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3859,7 +3885,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 6370385378599814953}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Windows/Kitchen Window Left Frame
+  - label: LivingZonePlan/Windows/Kitchen Window Left Frame
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3870,7 +3897,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Windows/Kitchen Window Center Frame
+  - label: LivingZonePlan/Windows/Kitchen Window Center Frame
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3881,7 +3909,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Windows/Kitchen Window Right Frame
+  - label: LivingZonePlan/Windows/Kitchen Window Right Frame
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3892,7 +3921,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Windows/Kitchen Window Left Glass
+  - label: LivingZonePlan/Windows/Kitchen Window Left Glass
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3903,7 +3933,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 933662390108880988}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Windows/Kitchen Window Right Glass
+  - label: LivingZonePlan/Windows/Kitchen Window Right Glass
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -3914,7 +3945,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_Sink_01
+  - label: Cabinet_Base_Sink_01
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0.020896643, y: 0.64720154, z: -0.00000032782555}
       m_Extent: {x: 0.45371437, y: 0.6472018, z: 0.68057156}
@@ -3925,7 +3957,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 8681307898688851281}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_Sink_01/Counter_Sink_01
+  - label: Cabinet_Base_Sink_01/Counter_Sink_01
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0.033180177, y: 0.037350856, z: 0.09856632}
       m_Extent: {x: 0.49643356, y: 0.036307834, z: 0.68057144}
@@ -3936,7 +3969,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 5581287886571103209}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_Sink_01/Counter_Sink_01/Sink_01
+  - label: Cabinet_Base_Sink_01/Counter_Sink_01/Sink_01
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: -0.050801218, y: -0.024266541, z: -0.0000029206276}
       m_Extent: {x: 0.38090378, y: 0.2607817, z: 0.4880159}
@@ -3947,7 +3981,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_Sink_01/Door_L.006
+  - label: Cabinet_Base_Sink_01/Door_L.006
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: -0.018066863, y: 0.000000074505806, z: 0.32800505}
       m_Extent: {x: 0.018066866, y: 0.45660114, z: 0.3300375}
@@ -3958,7 +3993,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: -170172034891362824}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_Sink_01/Plane.035
+  - label: Cabinet_Base_Sink_01/Plane.035
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0.005792608, y: 0.000000059604645, z: 0}
       m_Extent: {x: 0.01806701, y: 0.14603756, z: 0.661865}
@@ -3969,7 +4005,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 6995038741784181344}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_SD_01
+  - label: Cabinet_Base_SD_01
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0.020897105, y: 0.64720154, z: -0.025406688}
       m_Extent: {x: 0.45328504, y: 0.6472018, z: 0.4436541}
@@ -3980,7 +4017,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_SD_01/Counter_01
+  - label: Cabinet_Base_SD_01/Counter_01
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0.03318031, y: 0.037350778, z: -0.13835114}
       m_Extent: {x: 0.49643344, y: 0.036307756, z: 0.443654}
@@ -3991,7 +4029,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_SD_01/Drawer Script/Drawer.002
+  - label: Cabinet_Base_SD_01/Drawer Script/Drawer.002
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: -0.40599185, y: 0.000000052154064, z: -0.025406778}
       m_Extent: {x: 0.4298514, y: 0.14603749, z: 0.43340552}
@@ -4002,7 +4041,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_DD_01
+  - label: Cabinet_Base_DD_01
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0.020896673, y: 0.6472016, z: -0.00000020861626}
       m_Extent: {x: 0.45371428, y: 0.64720184, z: 0.58200526}
@@ -4013,7 +4053,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: -5162739069299784031}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_DD_01/Counter_02
+  - label: Cabinet_Base_DD_01/Counter_02
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0.033180222, y: 0.037350822, z: 0.000000029802322}
       m_Extent: {x: 0.4964335, y: 0.0363078, z: 0.58200514}
@@ -4024,7 +4065,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: -7530224160828069075}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_DD_01/Door_L.014
+  - label: Cabinet_Base_DD_01/Door_L.014
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: -0.018066779, y: 0.000000074505806, z: 0.27872184}
       m_Extent: {x: 0.018066872, y: 0.45660114, z: 0.2807543}
@@ -4035,7 +4077,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 3961575567013243776}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_DD_01/Door_L.014/Pull.028
+  - label: Cabinet_Base_DD_01/Door_L.014/Pull.028
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0.018617243, y: 0.000000026077032, z: 0.000000038184226}
       m_Extent: {x: 0.018617209, y: 0.10604718, z: 0.009692503}
@@ -4046,7 +4089,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_DD_01/Door_L.016
+  - label: Cabinet_Base_DD_01/Door_L.016
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: -0.018066468, y: -0.00000010430813, z: -0.27872178}
       m_Extent: {x: 0.01806677, y: 0.45660114, z: 0.2807543}
@@ -4057,7 +4101,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_DD_01/Door_L.016/Pull.030
+  - label: Cabinet_Base_DD_01/Door_L.016/Pull.030
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0.018617243, y: 0.000000026077032, z: 0.000000099651515}
       m_Extent: {x: 0.018617209, y: 0.10604718, z: 0.009692498}
@@ -4068,7 +4113,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_DD_01/Drawer_Script/Drawer.004
+  - label: Cabinet_Base_DD_01/Drawer_Script/Drawer.004
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: -0.40599182, y: 0.000000059604645, z: 0}
       m_Extent: {x: 0.42985144, y: 0.14603753, z: 0.5632986}
@@ -4079,7 +4125,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: -7902450388049098806}
     arrivalMesh: {fileID: 0}
-  - path: Cabinet_Base_DD_01/Drawer_Script/Drawer.004/Pull.027
+  - label: Cabinet_Base_DD_01/Drawer_Script/Drawer.004/Pull.027
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0.018617725, y: 0.00000011501834, z: 0.000000037252903}
       m_Extent: {x: 0.018617274, y: 0.009692505, z: 0.10604723}
@@ -4090,7 +4137,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 0}
-  - path: floor/Shared Zone Floor Surface
+  - label: floor/Shared Zone Floor Surface
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 11.61857, y: -0.05, z: -4.0692854}
       m_Extent: {x: 4.475, y: 0.05, z: 4.815}
@@ -4101,7 +4149,8 @@ MonoBehaviour:
     nextIsClipped: 1
     nextMesh: {fileID: -6873716746378139353}
     arrivalMesh: {fileID: 0}
-  - path: LivingZonePlan/Walls/LivingAndBedroom1Wall/Bedroom1 Lintel
+  - label: LivingZonePlan/Walls/LivingAndBedroom1Wall/Bedroom1 Lintel
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -4112,7 +4161,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: -515773970511507638}
-  - path: LivingZonePlan/Walls/LivingAndBedroom1Wall/Wall 1.1
+  - label: LivingZonePlan/Walls/LivingAndBedroom1Wall/Wall 1.1
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0}
       m_Extent: {x: 0.5, y: 0.5, z: 0.5}
@@ -4123,7 +4173,8 @@ MonoBehaviour:
     nextIsClipped: 0
     nextMesh: {fileID: 0}
     arrivalMesh: {fileID: 5180883314592058515}
-  - path: LivingZonePlan/Walls/LivingAndBedroom1Wall/Wall 1.2
+  - label: LivingZonePlan/Walls/LivingAndBedroom1Wall/Wall 1.2
+    isFoyer: 0
     sourceBounds:
       m_Center: {x: 0, y: 0, z: 0.42505848}
       m_Extent: {x: 0.50000083, y: 0.5, z: 0.9250585}

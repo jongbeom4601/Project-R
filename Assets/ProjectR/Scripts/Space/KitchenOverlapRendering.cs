@@ -2,27 +2,28 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 
 namespace ProjectR
 {
     public sealed class KitchenOverlapRendering : ScriptableObject
     {
         internal const string ResourceName = "ApartmentKitchenRendering";
-        internal const string FoyerFloorPath = "LivingZonePlan/FloorAndCeiling/Recessed Entry Floor";
 
         internal enum View { Full, FromPrevious, FromNext, Arrival }
 
         [SerializeField] private Surface[] surfaces;
 
-        internal Room Bind(Transform root, bool trimArrival)
+        // Surfaces are linked by index through the apartment's ApartmentParts.
+        internal Room Bind(ApartmentParts parts, bool trimArrival)
         {
             var renderers = new List<SurfaceRenderer>(surfaces.Length);
-            foreach (Surface surface in surfaces)
+            for (int i = 0; i < surfaces.Length; i++)
             {
-                Transform target = root.Find(surface.path);
-                if (target != null && target.TryGetComponent(out MeshFilter filter) &&
-                    surface.Matches(filter.sharedMesh) &&
-                    target.TryGetComponent(out MeshRenderer renderer))
+                Surface surface = surfaces[i];
+                MeshRenderer renderer = parts.OverlapSurface(i);
+                if (renderer != null && renderer.TryGetComponent(out MeshFilter filter) &&
+                    surface.Matches(filter.sharedMesh))
                 {
                     var part = new SurfaceRenderer(surface, renderer);
                     if (surface.arrivalMesh == null)
@@ -37,7 +38,10 @@ namespace ProjectR
         [Serializable]
         internal sealed class Surface
         {
-            public string path;
+            [FormerlySerializedAs("path"), Tooltip("Where the surface sits in the Apartment prefab. A label only.")]
+            public string label;
+            [Tooltip("Part of the recessed entry, kept whole while the player stands in it.")]
+            public bool isFoyer;
             public Bounds sourceBounds;
             public int sourceVertexCount;
             public int sourceSubMeshCount;
@@ -47,13 +51,7 @@ namespace ProjectR
             public Mesh nextMesh;
             public Mesh arrivalMesh;
 
-            internal bool IsFoyer => path == FoyerFloorPath ||
-                path == "LivingZonePlan/FloorAndCeiling/FrontDoor Threshold" ||
-                path == "LivingZonePlan/FloorAndCeiling/Ceiling 3" ||
-                path == "LivingZonePlan/Walls/Front Door Right Jamb" ||
-                path.StartsWith("LivingZonePlan/Walls/FrontDoorWall/", StringComparison.Ordinal) ||
-                path.StartsWith("LivingZonePlan/Walls/EntryEastWall/", StringComparison.Ordinal) ||
-                path.StartsWith("LivingZonePlan/Walls/Entry Base ", StringComparison.Ordinal);
+            internal bool IsFoyer => isFoyer;
 
             internal bool Matches(Mesh mesh)
             {

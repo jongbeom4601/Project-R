@@ -3812,6 +3812,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8881565316313732538}
+  - component: {fileID: 5644286669376250562}
   m_Layer: 0
   m_Name: Apartment
   m_TagString: Untagged
@@ -3868,6 +3869,76 @@ Transform:
   - {fileID: 978133442494162289}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5644286669376250562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2461012864480235912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efeba323b65d483e8f46bb263dcd1044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectR.ApartmentParts
+  kitchenWindows:
+  - {fileID: 8072164400000000424}
+  - {fileID: 8072164400000000427}
+  - {fileID: 7980879406387354112}
+  - {fileID: 9158125879333650234}
+  foyerFloor: {fileID: 8072164400000000268}
+  overlapSurfaces:
+  - {fileID: 47369926323756994}
+  - {fileID: 6317322944027072711}
+  - {fileID: 7628474485650070140}
+  - {fileID: 1249160706900631335}
+  - {fileID: 272688007214414953}
+  - {fileID: 5403220273064720701}
+  - {fileID: 2668543546878104574}
+  - {fileID: 8072164400000000234}
+  - {fileID: 8072164400000000246}
+  - {fileID: 8072164400000000249}
+  - {fileID: 8072164400000000267}
+  - {fileID: 8072164400000000390}
+  - {fileID: 8072164480000001313}
+  - {fileID: 8072164400000000306}
+  - {fileID: 8072164400000000312}
+  - {fileID: 8072164400000000315}
+  - {fileID: 8072164400000000324}
+  - {fileID: 8072164400000000330}
+  - {fileID: 8072164400000000333}
+  - {fileID: 8072164400000000336}
+  - {fileID: 8072164400000000342}
+  - {fileID: 8072164400000000363}
+  - {fileID: 8072164400000000369}
+  - {fileID: 8072164400000000396}
+  - {fileID: 8072164400000000409}
+  - {fileID: 8072164400000000412}
+  - {fileID: 8072164400000000415}
+  - {fileID: 8072164400000000418}
+  - {fileID: 8072164400000000421}
+  - {fileID: 8072164400000000424}
+  - {fileID: 8072164400000000427}
+  - {fileID: 8929485479135919198}
+  - {fileID: 6077348203655013441}
+  - {fileID: 6249700139787484308}
+  - {fileID: 2659305044582448202}
+  - {fileID: 8005235789968491765}
+  - {fileID: 5285893120330957359}
+  - {fileID: 5914811161296264293}
+  - {fileID: 2739667666138028468}
+  - {fileID: 5880793990466666603}
+  - {fileID: 1571288223826106388}
+  - {fileID: 694392501158885979}
+  - {fileID: 1290492995441159325}
+  - {fileID: 8815811402328755151}
+  - {fileID: 1231833831718626996}
+  - {fileID: 704123878487685218}
+  - {fileID: 6323737534824830768}
+  - {fileID: 8072164480000001303}
+  - {fileID: 8072164400000000351}
+  - {fileID: 8072164400000000354}
+  - {fileID: 8072164400000000357}
 --- !u!1 &2489453148408738009
 GameObject:
   m_ObjectHideFlags: 0
@@ -24257,6 +24328,9 @@ MonoBehaviour:
   openAngle: 90
   degreesPerSecond: 150
   openingSpeedOverride: 0
+  rattleAngle: 2.6
+  rattleJolts:
+  - 0
 --- !u!82 &4248360612588818770
 AudioSource:
   m_ObjectHideFlags: 0
@@ -24617,9 +24691,49 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 226aa234041d2be48881aab9632ea78e, type: 3}
+--- !u!23 &694392501158885979 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1212533452103472478, guid: 226aa234041d2be48881aab9632ea78e, type: 3}
+  m_PrefabInstance: {fileID: 1833302104029196037}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &704123878487685218 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1203796333689968487, guid: 226aa234041d2be48881aab9632ea78e, type: 3}
+  m_PrefabInstance: {fileID: 1833302104029196037}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1231833831718626996 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 606130914887944625, guid: 226aa234041d2be48881aab9632ea78e, type: 3}
+  m_PrefabInstance: {fileID: 1833302104029196037}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1290492995441159325 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 619792531974292376, guid: 226aa234041d2be48881aab9632ea78e, type: 3}
+  m_PrefabInstance: {fileID: 1833302104029196037}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1571288223826106388 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 918563746677929745, guid: 226aa234041d2be48881aab9632ea78e, type: 3}
+  m_PrefabInstance: {fileID: 1833302104029196037}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3141130306423450851 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3667825465465734118, guid: 226aa234041d2be48881aab9632ea78e, type: 3}
+  m_PrefabInstance: {fileID: 1833302104029196037}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &5880793990466666603 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5255125124023480174, guid: 226aa234041d2be48881aab9632ea78e, type: 3}
+  m_PrefabInstance: {fileID: 1833302104029196037}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6323737534824830768 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5670981103275161653, guid: 226aa234041d2be48881aab9632ea78e, type: 3}
+  m_PrefabInstance: {fileID: 1833302104029196037}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8815811402328755151 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7145311895657260234, guid: 226aa234041d2be48881aab9632ea78e, type: 3}
   m_PrefabInstance: {fileID: 1833302104029196037}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1906978554426185916
@@ -25181,9 +25295,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9d9f374cc51a6b4fb75751346d70b83, type: 3}
+--- !u!23 &2739667666138028468 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7262485176414588659, guid: d9d9f374cc51a6b4fb75751346d70b83, type: 3}
+  m_PrefabInstance: {fileID: 4813440836861466439}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &5285893120330957359 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 835282736875738472, guid: d9d9f374cc51a6b4fb75751346d70b83, type: 3}
+  m_PrefabInstance: {fileID: 4813440836861466439}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5907844732403470025 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1382648566164412814, guid: d9d9f374cc51a6b4fb75751346d70b83, type: 3}
+  m_PrefabInstance: {fileID: 4813440836861466439}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &5914811161296264293 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1214115485590276898, guid: d9d9f374cc51a6b4fb75751346d70b83, type: 3}
   m_PrefabInstance: {fileID: 4813440836861466439}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5103126250602564038
@@ -25472,6 +25601,9 @@ MonoBehaviour:
   openAngle: 90
   degreesPerSecond: 150
   openingSpeedOverride: 0
+  rattleAngle: 2.6
+  rattleJolts:
+  - 0
 --- !u!82 &8797703997778645936
 AudioSource:
   m_ObjectHideFlags: 0
@@ -25768,9 +25900,34 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a83256f7767c2c46a1371969648490c, type: 3}
+--- !u!23 &2659305044582448202 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 9130681740521821245, guid: 1a83256f7767c2c46a1371969648490c, type: 3}
+  m_PrefabInstance: {fileID: 6507997726638041207}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6077348203655013441 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1010528763243940918, guid: 1a83256f7767c2c46a1371969648490c, type: 3}
+  m_PrefabInstance: {fileID: 6507997726638041207}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6249700139787484308 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 930671007284499683, guid: 1a83256f7767c2c46a1371969648490c, type: 3}
+  m_PrefabInstance: {fileID: 6507997726638041207}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8005235789968491765 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3839673798871723138, guid: 1a83256f7767c2c46a1371969648490c, type: 3}
+  m_PrefabInstance: {fileID: 6507997726638041207}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8813844506854272539 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2305875522382251628, guid: 1a83256f7767c2c46a1371969648490c, type: 3}
+  m_PrefabInstance: {fileID: 6507997726638041207}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8929485479135919198 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2430513093863330857, guid: 1a83256f7767c2c46a1371969648490c, type: 3}
   m_PrefabInstance: {fileID: 6507997726638041207}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6988301045934279073
@@ -25975,6 +26132,9 @@ MonoBehaviour:
   openAngle: 90
   degreesPerSecond: 150
   openingSpeedOverride: 0
+  rattleAngle: 2.6
+  rattleJolts:
+  - 0
 --- !u!82 &9006861744561549339
 AudioSource:
   m_ObjectHideFlags: 0
@@ -28188,6 +28348,9 @@ MonoBehaviour:
   openAngle: 90
   degreesPerSecond: 150
   openingSpeedOverride: 0
+  rattleAngle: 2.6
+  rattleJolts:
+  - 0
 --- !u!82 &359842617305953185
 AudioSource:
   m_ObjectHideFlags: 0

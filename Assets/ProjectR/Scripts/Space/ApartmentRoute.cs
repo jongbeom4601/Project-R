@@ -28,11 +28,8 @@ namespace ProjectR
         private Renderer[][] kitchenWindows;
         private ReflectionProbe[][] roomProbes;
         private Collider[][] intrudersInto;
+        private ApartmentParts[] parts;
         private readonly System.Collections.Generic.List<Collider> suppressedColliders = new();
-
-        // Panes and their sky cards over the kitchen counter. Neighbouring apartments overlap here,
-        // so only the apartment that owns the kitchen may draw them.
-        private const string KitchenWindowsPath = "LivingZonePlan/Windows";
 
         // Living room, hallway, dining and kitchen of an apartment, in its own local space.
         // Stops short of the front-door frame (x > 16) so the shared doorway keeps all of its collision.
@@ -46,6 +43,10 @@ namespace ProjectR
 
             foreach (ApartmentExit exit in exits)
                 exit.ShareDoor(transform);
+
+            parts = new ApartmentParts[spaces.Length];
+            for (int i = 0; i < spaces.Length; i++)
+                parts[i] = spaces[i].GetComponent<ApartmentParts>();
 
             SetUpApartmentRendering();
             CollectKitchenWindows();
@@ -112,12 +113,8 @@ namespace ProjectR
             {
                 uint layer = RoomLightLayer(i);
                 SetRenderingLayers(spaces[i], layer, RoomGeometryLayers(i));
-                if (i > 0 && i < exits.Length)
-                {
-                    Transform floor = spaces[i].transform.Find(KitchenOverlapRendering.FoyerFloorPath);
-                    if (floor != null)
-                        foyerFloors[i] = floor.GetComponent<BoxCollider>();
-                }
+                if (i > 0 && i < exits.Length && parts[i] != null)
+                    foyerFloors[i] = parts[i].FoyerFloor;
             }
 
             int last = spaces.Length - 1;
@@ -158,10 +155,9 @@ namespace ProjectR
             for (int i = 0; i < spaces.Length; i++)
             {
                 roomProbes[i] = spaces[i].GetComponentsInChildren<ReflectionProbe>(true);
-                Transform windows = spaces[i].transform.Find(KitchenWindowsPath);
-                kitchenWindows[i] = windows == null
-                    ? System.Array.Empty<Renderer>()
-                    : System.Array.FindAll(windows.GetComponentsInChildren<Renderer>(true), r => r.name.Contains("Glass"));
+                // Panes and their sky cards over the kitchen counter. Neighbouring apartments overlap there,
+                // so only the apartment that owns the kitchen may draw them.
+                kitchenWindows[i] = parts[i] != null ? parts[i].KitchenWindows : System.Array.Empty<Renderer>();
             }
         }
 
@@ -242,7 +238,8 @@ namespace ProjectR
             {
                 bool owns = kitchenOwner <= 0 || i == kitchenOwner;
                 foreach (Renderer pane in kitchenWindows[i])
-                    pane.forceRenderingOff = !owns;
+                    if (pane != null)
+                        pane.forceRenderingOff = !owns;
                 // Where kitchens overlap, the owner's room capture must win the reflection blend.
                 foreach (ReflectionProbe probe in roomProbes[i])
                     probe.importance = owns ? 2 : 1;
@@ -262,8 +259,8 @@ namespace ProjectR
                         view = KitchenOverlapRendering.View.FromNext;
                 }
 
-                if (spaces[i].activeSelf && kitchenRooms[i] == null)
-                    kitchenRooms[i] = kitchenRendering.Bind(spaces[i].transform, i > 1);
+                if (spaces[i].activeSelf && kitchenRooms[i] == null && parts[i] != null)
+                    kitchenRooms[i] = kitchenRendering.Bind(parts[i], i > 1);
 
                 bool preserveFoyer = i == current && view == KitchenOverlapRendering.View.FromNext;
                 kitchenRooms[i]?.SetView(view, preserveFoyer);
