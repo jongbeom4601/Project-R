@@ -32787,9 +32787,6 @@ MonoBehaviour:
   localPosition: {x: 13, y: 1.55, z: -4.35}
   localEuler: {x: 4, y: 264, z: 0}
   fieldOfView: 62
-  lampFixtures:
-  - {fileID: 2112055529}
-  - {fileID: 2112055527}
   steadyTime: {x: 1.5, y: 5}
   outageTime: {x: 0.05, y: 0.22}
   longOutageChance: 0.2
@@ -43836,19 +43833,9 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2461012864480235912, guid: 342aec6a999a1854bb350c75aea67b31, type: 3}
   m_PrefabInstance: {fileID: 2112055524}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &2112055527 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3962384505197890369, guid: 342aec6a999a1854bb350c75aea67b31, type: 3}
-  m_PrefabInstance: {fileID: 2112055524}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2112055528 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1748340826764817441, guid: 342aec6a999a1854bb350c75aea67b31, type: 3}
-  m_PrefabInstance: {fileID: 2112055524}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &2112055529 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8219314263149854265, guid: 342aec6a999a1854bb350c75aea67b31, type: 3}
   m_PrefabInstance: {fileID: 2112055524}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &2112055532 stripped

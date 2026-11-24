@@ -3939,6 +3939,9 @@ MonoBehaviour:
   - {fileID: 8072164400000000351}
   - {fileID: 8072164400000000354}
   - {fileID: 8072164400000000357}
+  titleLamps:
+  - {fileID: 8219314263149854265}
+  - {fileID: 3962384505197890369}
 --- !u!1 &2489453148408738009
 GameObject:
   m_ObjectHideFlags: 0

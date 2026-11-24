@@ -49,7 +49,7 @@
 - `PlayerController`는 `CharacterController`와 Input System으로 이동·시점·충돌을 처리한다. `PlayerInteractor`는 카메라 중앙 레이캐스트로 가까운 문에 상호작용을 요청한다. `DoorController`는 개폐 상태와 표현을 관리한다.
 - `SpatialManager`는 공간 ID·활성 상태·출입구 연결을, `TransitionController`는 전환 안전 판정과 실행 시점을 맡는다. `HorrorEventManager`는 단계와 발동 조건을, `GameDirector`는 시작·종료와 엔딩을 관리한다. 필요한 기능부터 구현하고, 상태를 씬 트리거와 매니저 여러 곳에 중복 저장하지 않는다.
 - 사운드와 효과는 환경음, 위치가 느껴지는 3D 소리, 강한 사건 뒤의 정적을 구분해 제어한다. 문 속도, 상호작용 거리, 연출 시간처럼 조정이 필요한 값은 인스펙터에서 설정할 수 있게 한다.
-- 코드에서 오브젝트를 이름·하이라키 경로 문자열로 찾지 않는다(`Transform.Find`, 이름 비교 등). 인스펙터 참조로 연결해 이름 변경·재배치에도 연결이 유지되게 한다. 아파트에서 경로가 특별히 다루는 부분(부엌 창 유리·하늘 카드, 현관 바닥, 부엌 겹침 표면)은 `Apartment` 프리팹 루트의 `ApartmentParts`가 들고 있고, 겹침 표면 배열은 `ApartmentKitchenRendering` 에셋의 표면 순서와 같다. 반복 재생되는 고정 위치 효과음은 `AudioSource.PlayClipAtPoint` 대신 `AudioCue.CreatePointSource`로 만든 재사용 소스를 쓴다.
+- 코드에서 오브젝트를 이름·하이라키 경로 문자열로 찾지 않는다(`Transform.Find`, 이름 비교 등). 인스펙터 참조로 연결해 이름 변경·재배치에도 연결이 유지되게 한다. 아파트에서 경로가 특별히 다루는 부분(부엌 창 유리·하늘 카드, 현관 바닥, 부엌 겹침 표면, 타이틀 배경에서 깜빡일 전등)은 `Apartment` 프리팹 루트의 `ApartmentParts`가 들고 있고, 겹침 표면 배열은 `ApartmentKitchenRendering` 에셋의 표면 순서와 같다. 반복 재생되는 고정 위치 효과음은 `AudioSource.PlayClipAtPoint` 대신 `AudioCue.CreatePointSource`로 만든 재사용 소스를 쓴다.
 - 씬 최상위는 `Player`, `Environment`, `Lighting`, `Progression`, `Presentation`만 둔다. 공간·소품은 `Environment` 아래 구역 그룹에 넣는다.
 - 씬과 프리팹의 필수 참조를 명시적으로 연결한다. 자산을 옮기거나 이름을 바꿀 때 `.meta`와 GUID를 보존한다. 버전 관리를 시작하면 `Assets/`, `Packages/`, `ProjectSettings/`와 관련 `.meta`를 추적하고 `Library/`, `Temp/`, `Logs/`, 로컬 빌드 산출물은 제외한다.
 

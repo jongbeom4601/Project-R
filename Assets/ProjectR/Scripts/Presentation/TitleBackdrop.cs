@@ -19,8 +19,6 @@ namespace ProjectR
         [SerializeField, Tooltip("Camera rotation in the apartment's own space.")]
         private Vector3 localEuler = new(4f, 264f, 0f);
         [SerializeField, Range(30f, 90f)] private float fieldOfView = 62f;
-        [SerializeField, Tooltip("Lamp fixtures in that apartment that falter on the title screen. Each one's light and glowing meshes go out together.")]
-        private Transform[] lampFixtures = System.Array.Empty<Transform>();
         [SerializeField] private Vector2 steadyTime = new(1.5f, 5f);
         [SerializeField] private Vector2 outageTime = new(.05f, .22f);
         [SerializeField, Range(0f, 1f), Tooltip("Chance that a fault ends in a long blackout instead of a short stutter.")]
@@ -61,7 +59,9 @@ namespace ProjectR
                 playerCamera.enabled = false;
 
             lamps.Clear();
-            foreach (Transform t in lampFixtures)
+            // The lamps come from whichever apartment is shown (its ApartmentParts), so changing spaceIndex moves them too.
+            Transform[] fixtures = space.TryGetComponent(out ApartmentParts parts) ? parts.TitleLamps : System.Array.Empty<Transform>();
+            foreach (Transform t in fixtures)
                 if (t != null)
                 {
                     Light light = t.GetComponentInChildren<Light>(true);

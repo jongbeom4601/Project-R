@@ -15,7 +15,11 @@ namespace ProjectR
         [SerializeField, Tooltip("Surfaces clipped where kitchens overlap, in the same order as the surfaces of ApartmentKitchenRendering.")]
         private MeshRenderer[] overlapSurfaces = System.Array.Empty<MeshRenderer>();
 
+        [SerializeField, Tooltip("Lamp fixtures that falter when this apartment is the title-screen backdrop. Each one's light and glowing meshes go out together.")]
+        private Transform[] titleLamps = System.Array.Empty<Transform>();
+
         public Renderer[] KitchenWindows => kitchenWindows;
+        public Transform[] TitleLamps => titleLamps;
         public BoxCollider FoyerFloor => foyerFloor;
 
         internal MeshRenderer OverlapSurface(int index) =>
