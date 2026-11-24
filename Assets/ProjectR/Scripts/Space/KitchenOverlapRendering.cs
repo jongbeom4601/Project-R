@@ -22,6 +22,10 @@ namespace ProjectR
             {
                 Surface surface = surfaces[i];
                 MeshRenderer renderer = parts.OverlapSurface(i);
+                // Kitchen window panes are shown only by the kitchen's owner, and ApartmentRoute alone switches them.
+                // Binding them here too would record a pane hidden for a neighbour as hidden for good.
+                if (System.Array.IndexOf(parts.KitchenWindows, renderer) >= 0)
+                    continue;
                 if (renderer != null && renderer.TryGetComponent(out MeshFilter filter) &&
                     surface.Matches(filter.sharedMesh))
                 {
