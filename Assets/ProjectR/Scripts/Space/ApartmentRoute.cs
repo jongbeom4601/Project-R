@@ -78,7 +78,10 @@ namespace ProjectR
                 }
                 else if (entrance.IsClosed)
                 {
+                    // The apartment behind the front door switches off now, so it can no longer hold the kitchen,
+                    // even while the player still stands in the entry.
                     previousIsOpen = false;
+                    kitchenOwner = current;
                     activeSpacesChanged = true;
                 }
             }
@@ -92,12 +95,13 @@ namespace ProjectR
                 activeSpacesChanged = true;
             }
 
-            // Stepping into the entry hands the kitchen to the apartment beyond the front door; stepping out takes it back.
+            // Stepping into the entry hands the kitchen to the apartment beyond the front door while that door is
+            // still open (that apartment is active only then); stepping out takes it back.
             if (current > 0 && current <= exits.Length)
             {
                 int crossing = exits[current - 1].CrossedFoyerBoundary(foyerFloors[current], previousCenter, center);
                 if (crossing != 0)
-                    kitchenOwner = crossing > 0 ? current - 1 : current;
+                    kitchenOwner = crossing > 0 && previousIsOpen ? current - 1 : current;
             }
 
             if (activeSpacesChanged)
