@@ -36,7 +36,7 @@ namespace ProjectR
             if (unlockStage != 2)
                 return CurrentStage >= unlockStage;
 
-            return CurrentStage < 2 || space.IsExtended;
+            return CurrentStage < 2 || (space != null && space.IsExtended);
         }
 
         public void OnLockedDoorInteracted(DoorController door)
@@ -101,7 +101,9 @@ namespace ProjectR
 
         private void LateUpdate()
         {
-            if (Time.timeScale == 0f || CurrentStage != 2 || Phase != StagePhase.Prepared || !transition.CanChangeCorridor())
+            // Without a corridor change in the scene (space or transition empty), stage 02 stays prepared.
+            if (Time.timeScale == 0f || CurrentStage != 2 || Phase != StagePhase.Prepared || space == null || transition == null ||
+                !transition.CanChangeCorridor())
                 return;
 
             space.ExtendCorridor();

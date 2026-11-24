@@ -21,6 +21,44 @@ namespace ProjectR
 
         // A space of the route by index (0 = starting bedroom, 1-8 = apartments), or null.
         public GameObject Space(int index) => index >= 0 && index < spaces.Length ? spaces[index] : null;
+        public int SpaceCount => spaces.Length;
+
+        // How far past an apartment's front door a jump lands: clear of the entry floor, in the hallway.
+        private const float JumpDepth = 3f;
+
+        // Developer shortcut: puts the player in a space as if they had just walked in and the door had shut behind them.
+        // Space 0 is the starting bedroom (player start); apartments land just inside the front door, facing in.
+        public void JumpTo(int index)
+        {
+            if (index < 0 || index >= spaces.Length)
+                return;
+
+            current = index;
+            previousIsOpen = false;
+            kitchenOwner = index;
+            UpdateActiveSpaces();
+            UpdateKitchenRendering();
+
+            Vector3 spot;
+            Quaternion facing;
+            if (index == 0)
+            {
+                spot = playerStart.position;
+                facing = playerStart.rotation;
+            }
+            else
+            {
+                Transform entry = exits[index - 1].Entry;
+                spot = entry.TransformPoint(0f, 0f, JumpDepth) + Vector3.up * .02f;
+                facing = Quaternion.Euler(0f, entry.eulerAngles.y, 0f);
+            }
+
+            player.enabled = false;
+            player.transform.SetPositionAndRotation(spot, facing);
+            player.enabled = true;
+            Physics.SyncTransforms();
+            previousCenter = player.bounds.center;
+        }
         private int kitchenOwner;
         private bool previousIsOpen;
         private Vector3 previousCenter;

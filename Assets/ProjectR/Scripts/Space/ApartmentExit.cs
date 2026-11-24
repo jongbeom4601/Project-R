@@ -9,6 +9,8 @@ namespace ProjectR
         [SerializeField] private DoorController door;
 
         internal bool IsClosed => door.IsClosed;
+        // Doorway marker on the destination side, facing into the destination space.
+        internal Transform Entry => destinationDoorway;
 
         internal void AlignSource(Transform sourceSpace)
         {

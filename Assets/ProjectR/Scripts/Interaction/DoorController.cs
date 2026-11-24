@@ -60,6 +60,8 @@ namespace ProjectR
         public bool HasOpened { get; private set; }
         public float Openness => Mathf.Abs(angle) / openAngle;
         public bool IsPassageLocked => passageLocked;
+        // Raised when the player presses E on this door while it is locked for them.
+        public event System.Action<DoorController> LockedTried;
         internal bool PassageAvailable { private get; set; } = true;
         public bool CanInteractFrom(CharacterController interactor) =>
             IsLockedFor(interactor) || state == State.Open || (state == State.Closed && CanOpen());
@@ -114,6 +116,7 @@ namespace ProjectR
                 Rattle(interactor);
                 if (progression != null)
                     progression.OnLockedDoorInteracted(this);
+                LockedTried?.Invoke(this);
                 return;
             }
 

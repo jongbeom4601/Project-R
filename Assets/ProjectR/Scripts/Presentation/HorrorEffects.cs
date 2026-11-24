@@ -47,7 +47,7 @@ namespace ProjectR
 
         private void Start()
         {
-            if (indoorAmbience.clip != null)
+            if (indoorAmbience != null && indoorAmbience.clip != null)
                 indoorAmbience.Play();
         }
 
@@ -69,7 +69,8 @@ namespace ProjectR
 
         private void Update()
         {
-            if (Time.timeScale == 0f || !exteriorAmbience.isActiveAndEnabled)
+            // The exterior and its front door may be absent from the scene.
+            if (Time.timeScale == 0f || exteriorAmbience == null || frontDoor == null || !exteriorAmbience.isActiveAndEnabled)
                 return;
 
             if (!exteriorAmbience.isPlaying && !fadingOutdoors && exteriorAmbience.clip != null)
@@ -113,29 +114,35 @@ namespace ProjectR
                 StopCoroutine(hallCue);
                 hallCue = null;
             }
-            houseCue.Stop();
-            roomCue.Stop();
+            if (houseCue != null)
+                houseCue.Stop();
+            if (roomCue != null)
+                roomCue.Stop();
             corridorCue.PlayCue(footstep, .74f);
             yield return new WaitForSeconds(.42f);
             corridorCue.PlayCue(footstep, 1f);
             yield return new WaitForSeconds(.30f);
-            corridorExitBehindPlayer.TryClose(progression.PlayerBody, 390f);
+            if (corridorExitBehindPlayer != null)
+                corridorExitBehindPlayer.TryClose(progression.PlayerBody, 390f);
             slamSource.PlayCue(doorSlam, 1f);
 
-            bool flickerWasEnabled = flickerLight.enabled;
-            flickerLight.enabled = false;
-            yield return new WaitForSeconds(.13f);
-            flickerLight.enabled = true;
-            shadowCaster.SetActive(true);
-            yield return new WaitForSeconds(.22f);
-            shadowCaster.SetActive(false);
-            flickerLight.enabled = false;
-            yield return new WaitForSeconds(.12f);
-            flickerLight.enabled = flickerWasEnabled;
+            if (flickerLight != null && shadowCaster != null)
+            {
+                bool flickerWasEnabled = flickerLight.enabled;
+                flickerLight.enabled = false;
+                yield return new WaitForSeconds(.13f);
+                flickerLight.enabled = true;
+                shadowCaster.SetActive(true);
+                yield return new WaitForSeconds(.22f);
+                shadowCaster.SetActive(false);
+                flickerLight.enabled = false;
+                yield return new WaitForSeconds(.12f);
+                flickerLight.enabled = flickerWasEnabled;
+            }
 
-            indoorAmbience.Stop();
-            corridorCue.Stop();
-            slamSource.Stop();
+            foreach (AudioSource source in new[] { indoorAmbience, corridorCue, slamSource })
+                if (source != null)
+                    source.Stop();
             Blackout();
             silenceCue.PlayCue(tinnitus, tinnitusVolume);
             yield return new WaitForSeconds(1.5f);
@@ -150,6 +157,8 @@ namespace ProjectR
             lightStates = new bool[sceneLights.Length];
             for (int i = 0; i < sceneLights.Length; i++)
             {
+                if (sceneLights[i] == null)
+                    continue;
                 lightStates[i] = sceneLights[i].enabled;
                 sceneLights[i].enabled = false;
             }
