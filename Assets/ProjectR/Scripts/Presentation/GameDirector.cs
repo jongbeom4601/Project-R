@@ -9,7 +9,7 @@ namespace ProjectR
     [DefaultExecutionOrder(-10)]
     public sealed class GameDirector : MonoBehaviour
     {
-        private enum Screen { Title, Playing, Paused, Settings, Brightness, Ending }
+        private enum Screen { StartupBrightness, Title, Playing, Paused, Settings, Brightness, Ending }
 
         [SerializeField] private HorrorEventManager progression;
         [SerializeField] private PlayerController player;
@@ -41,11 +41,17 @@ namespace ProjectR
         private bool starting;
         private Screen screen = Screen.Title;
         private Screen settingsReturn = Screen.Title;
+        // The brightness check opens the game once per launch, before the title; returning to the title skips it.
+        private static bool brightnessChecked;
+
+        // Each launch starts unchecked, also in the Editor when domain reload is off.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetLaunchState() => brightnessChecked = false;
         private AudioSource previewSource;
         private float lastPreview;
 
         private bool korean;
-        private GUIStyle titleStyle, headingStyle, itemStyle, itemSpacedStyle, labelStyle, valueStyle, hintStyle, subtitleStyle, creditStyle, noticeStyle, sliderStyle, thumbStyle;
+        private GUIStyle titleStyle, headingStyle, itemStyle, itemSpacedStyle, labelStyle, valueStyle, hintStyle, subtitleStyle, creditStyle, demoStyle, noticeStyle, centredLabelStyle, valueLeftStyle, sliderStyle, thumbStyle;
 
         public bool IsEnding { get; private set; }
         public bool EndingShown { get; private set; }
@@ -63,6 +69,16 @@ namespace ProjectR
             previewSource.ignoreListenerPause = true;
 
             ShowTitle();
+            if (!brightnessChecked)
+                screen = Screen.StartupBrightness; // over black; the title comes after 확인
+        }
+
+        // Leaves the start-up brightness check for the title.
+        private void FinishStartupBrightness()
+        {
+            brightnessChecked = true;
+            GameSettings.Save();
+            screen = Screen.Title;
         }
 
         private void OnDestroy()
@@ -242,6 +258,21 @@ namespace ProjectR
         private static readonly Color Blood = new(.62f, .09f, .07f);
         private const float ItemHeight = 44f;
 
+        // Menus are laid out for a 1080-pixel-high screen and scaled to the real one. Positions are multiplied
+        // at draw time and fonts are built at the scaled size, so text stays sharp at any resolution.
+        private const float ReferenceHeight = 1080f;
+        private const int TitleSize = 66, HeadingSize = 30, ItemSize = 20, LabelSize = 17, SmallSize = 15, SubtitleSize = 20, NoticeSize = 21, DemoSize = 22;
+        // Narrower than this (in reference units) and the menus would run off the sides, so a narrow screen scales by width.
+        private const float MinViewWidth = 1280f;
+        private static float UiScale =>
+            Mathf.Max(.1f, Mathf.Min(UnityEngine.Screen.height / ReferenceHeight, UnityEngine.Screen.width / MinViewWidth));
+        private static float ViewWidth => UnityEngine.Screen.width / UiScale;
+        private static float ViewHeight => UnityEngine.Screen.height / UiScale;
+        private static Rect Px(Rect r) { float s = UiScale; return new Rect(r.x * s, r.y * s, r.width * s, r.height * s); }
+        private static Vector2 MousePoint => Event.current.mousePosition / UiScale;
+        private float stylesScale;
+        private Texture2D knobIdle, knobLit;
+
         private int hovered = -1;
         private float hoverStarted;
         private int itemId;
@@ -262,15 +293,17 @@ namespace ProjectR
             {
                 Screen.Title => .2f, // the live hallway stays visible; the left side is darkened below
                 Screen.Ending => fade,
+                Screen.StartupBrightness => 1f,
                 Screen.Settings or Screen.Brightness when settingsReturn == Screen.Title => .6f,
                 _ => .55f,
             };
-            Fill(new Rect(0f, 0f, UnityEngine.Screen.width, UnityEngine.Screen.height), new Color(0f, 0f, 0f, shade));
-            if (screen != Screen.Ending || EndingShown)
+            Fill(new Rect(0f, 0f, ViewWidth, ViewHeight), new Color(0f, 0f, 0f, shade));
+            if ((screen != Screen.Ending || EndingShown) && screen != Screen.StartupBrightness)
                 LeftGradient(screen == Screen.Title ? .82f : .9f, screen == Screen.Title ? .6f : .72f);
 
             switch (screen)
             {
+                case Screen.StartupBrightness: DrawStartupBrightness(); break;
                 case Screen.Title: DrawTitle(); break;
                 case Screen.Paused: DrawPause(); break;
                 case Screen.Settings: DrawSettings(); break;
@@ -287,26 +320,26 @@ namespace ProjectR
                 return;
             int previousDepth = GUI.depth;
             GUI.depth = -200;
-            Fill(new Rect(0f, 0f, UnityEngine.Screen.width, UnityEngine.Screen.height), new Color(0f, 0f, 0f, curtain));
+            Fill(new Rect(0f, 0f, ViewWidth, ViewHeight), new Color(0f, 0f, 0f, curtain));
             if (noticeAlpha > 0f)
             {
                 CreateStyles();
                 Color previous = GUI.color;
                 GUI.color = new Color(1f, 1f, 1f, noticeAlpha);
-                float mid = UnityEngine.Screen.height * .5f;
-                GUI.Label(new Rect(0f, mid - 20f, UnityEngine.Screen.width, 40f), startNotice, noticeStyle);
+                float mid = ViewHeight * .5f;
+                GUI.Label(Px(new Rect(0f, mid - 20f, ViewWidth, 40f)), startNotice, noticeStyle);
                 GUI.color = new Color(1f, 1f, 1f, noticeAlpha * .5f);
-                GUI.Label(new Rect(0f, mid + 34f, UnityEngine.Screen.width, 26f), "아무 키나 눌러 건너뛰기", hintStyle);
+                GUI.Label(Px(new Rect(0f, mid + 34f, ViewWidth, 26f)), "아무 키나 눌러 건너뛰기", hintStyle);
                 GUI.color = previous;
             }
             GUI.depth = previousDepth;
         }
 
-        private static float Left => Mathf.Max(32f, UnityEngine.Screen.width * .08f);
+        private static float Left => Mathf.Max(32f, ViewWidth * .08f);
 
         private void DrawTitle()
         {
-            float top = UnityEngine.Screen.height * .5f - 170f;
+            float top = ViewHeight * .5f - 170f;
             DrawGameTitle(Left, top);
             float y = top + 150f;
             if (Item(ref y, "시작") && !starting)
@@ -319,7 +352,7 @@ namespace ProjectR
 
         private void DrawPause()
         {
-            float y = UnityEngine.Screen.height * .5f - 150f;
+            float y = ViewHeight * .5f - 150f;
             Heading(ref y, "PAUSED");
             if (Item(ref y, T("계속하기", "Resume")))
                 SetScreen(Screen.Playing);
@@ -337,21 +370,21 @@ namespace ProjectR
         {
             float since = Time.unscaledTime - endingShownAt;
             Color previous = GUI.color;
-            float width = Mathf.Min(620f, UnityEngine.Screen.width - Left - 32f);
-            float top = UnityEngine.Screen.height * .5f - 220f;
+            float width = Mathf.Min(620f, ViewWidth - Left - 32f);
+            float top = ViewHeight * .5f - 220f;
 
             GUI.color = new Color(1f, 1f, 1f, Mathf.Clamp01(since / 1.6f));
             DrawGameTitle(Left, top);
 
             GUI.color = new Color(1f, 1f, 1f, Mathf.Clamp01((since - 1.2f) / 1.2f));
-            float y = top + titleStyle.fontSize * 1.32f + 34f;
-            GUI.Label(new Rect(Left, y, width, 30f), "증강현실과 가상현실 텀프로젝트", subtitleStyle);
-            GUI.Label(new Rect(Left, y + 34f, width, 28f), "데모 버전을 플레이해주셔서 감사합니다.", labelStyle);
+            float y = top + TitleSize * 1.32f + 72f;
+            GUI.Label(Px(new Rect(Left, y, width, 30f)), "증강현실과 가상현실 텀프로젝트", subtitleStyle);
+            GUI.Label(Px(new Rect(Left, y + 34f, width, 28f)), "데모 버전을 플레이해주셔서 감사합니다.", labelStyle);
 
             GUI.color = new Color(1f, 1f, 1f, Mathf.Clamp01((since - 2.2f) / 1.2f));
             y += 104f;
-            Spaced(Left, y, "DEVELOPED BY", creditStyle, new Color(Ink.r, Ink.g, Ink.b, .55f), creditStyle.fontSize * .3f);
-            GUI.Label(new Rect(Left, y + 24f, width, 28f), "울산대 IT융합전공 20211999 이종범", labelStyle);
+            Spaced(Left, y, "DEVELOPED BY", creditStyle, new Color(Ink.r, Ink.g, Ink.b, .55f), SmallSize * .3f);
+            GUI.Label(Px(new Rect(Left, y + 24f, width, 28f)), "울산대 IT융합전공 20211999 이종범", labelStyle);
 
             GUI.color = new Color(1f, 1f, 1f, Mathf.Clamp01((since - 3.2f) / .8f));
             y += 92f;
@@ -367,7 +400,7 @@ namespace ProjectR
 
         private void DrawSettings()
         {
-            float y = UnityEngine.Screen.height * .5f - 210f;
+            float y = ViewHeight * .5f - 210f;
             Heading(ref y, "SETTINGS");
 
             float master = Slider(ref y, T("전체 볼륨", "Master Volume"), GameSettings.MasterVolume, 0f, 1f, Percent);
@@ -398,10 +431,10 @@ namespace ProjectR
         // A calibration card: three marks at different darkness, previewed with the chosen exposure.
         private void DrawBrightness()
         {
-            float y = UnityEngine.Screen.height * .5f - 240f;
+            float y = ViewHeight * .5f - 240f;
             Heading(ref y, "BRIGHTNESS");
 
-            float width = Mathf.Min(520f, UnityEngine.Screen.width - Left * 2f);
+            float width = Mathf.Min(520f, ViewWidth - Left * 2f);
             var card = new Rect(Left, y, width, 210f);
             Fill(card, Color.black);
             float gain = Mathf.Pow(2f, GameSettings.Brightness);
@@ -412,7 +445,7 @@ namespace ProjectR
                 float v = Mathf.LinearToGammaSpace(Mathf.Clamp01(levels[i] * gain));
                 Fill(new Rect(card.x + gap + i * (markSize + gap), card.y + 30f, markSize, markSize), new Color(v, v, v * 1.05f, 1f));
             }
-            GUI.Label(new Rect(card.x, card.y + 132f, card.width, 64f),
+            GUI.Label(Px(new Rect(card.x, card.y + 132f, card.width, 64f)),
                 T("왼쪽 그림이 겨우 보이고\n가운데 그림이 또렷하게 보이도록 맞추세요.",
                   "Set it so the left mark is barely visible\nand the middle one is clear."), hintStyle);
 
@@ -434,6 +467,68 @@ namespace ProjectR
             }
         }
 
+        // Launch check, centred on black: a heading, the calibration marks, one slider, then 기본값 and 확인.
+        private void DrawStartupBrightness()
+        {
+            float centre = ViewWidth * .5f;
+            float y = ViewHeight * .5f - 260f;
+
+            SpacedCentred(centre, y, "BRIGHTNESS", headingStyle, Ink, HeadingSize * .18f);
+            y += HeadingSize * 1.9f;
+            GUI.Label(Px(new Rect(0f, y, ViewWidth, 30f)), "게임을 시작하기 전에 화면 밝기를 맞춰 주세요.", centredLabelStyle);
+            y += 52f;
+
+            // Three marks at rising darkness, shown with the chosen exposure.
+            const float cardWidth = 520f, cardHeight = 200f, markSize = 86f;
+            var card = new Rect(centre - cardWidth * .5f, y, cardWidth, cardHeight);
+            Fill(card, new Color(.02f, .02f, .02f, 1f));
+            float gain = Mathf.Pow(2f, GameSettings.Brightness);
+            float[] levels = { .0035f, .012f, .04f };
+            float gap = (cardWidth - markSize * 3f) / 4f;
+            for (int i = 0; i < levels.Length; i++)
+            {
+                float v = Mathf.LinearToGammaSpace(Mathf.Clamp01(levels[i] * gain));
+                Fill(new Rect(card.x + gap + i * (markSize + gap), card.y + 28f, markSize, markSize), new Color(v, v, v * 1.05f, 1f));
+            }
+            GUI.Label(Px(new Rect(card.x, card.y + 128f, card.width, 60f)),
+                "왼쪽 그림이 겨우 보이고\n가운데 그림이 또렷하게 보이도록 맞추세요.", hintStyle);
+            y = card.yMax + 34f;
+
+            // The slider, centred under the card, with its value at the right end.
+            const float trackWidth = 360f;
+            var track = new Rect(centre - trackWidth * .5f, y + 16f, trackWidth, 1.5f);
+            float t = Mathf.InverseLerp(GameSettings.MinBrightness, GameSettings.MaxBrightness, GameSettings.Brightness);
+            Fill(track, new Color(Ink.r, Ink.g, Ink.b, .22f));
+            Fill(new Rect(track.x, track.y, track.width * t, track.height), new Color(Ink.r, Ink.g, Ink.b, .75f));
+            float brightness = GUI.HorizontalSlider(Px(new Rect(track.x, y + 9f, track.width, 16f)), GameSettings.Brightness,
+                GameSettings.MinBrightness, GameSettings.MaxBrightness, sliderStyle, thumbStyle);
+            if (!Mathf.Approximately(brightness, GameSettings.Brightness))
+                GameSettings.SetBrightness(brightness);
+            GUI.Label(Px(new Rect(track.xMax + 18f, y, 80f, 32f)), Signed(GameSettings.Brightness), valueLeftStyle);
+            y += 70f;
+
+            // 기본값 and 확인 side by side, the pair centred.
+            const float buttonGap = 70f;
+            float defaultWidth = itemStyle.CalcSize(new GUIContent("기본값")).x / UiScale + 40f;
+            float doneWidth = itemStyle.CalcSize(new GUIContent("확인")).x / UiScale + 40f;
+            float x = centre - (defaultWidth + buttonGap + doneWidth) * .5f;
+            float rowY = y;
+            if (Item(ref y, "기본값", false, x))
+                GameSettings.SetBrightness(0f);
+            y = rowY;
+            if (Item(ref y, "확인", false, x + defaultWidth + buttonGap))
+                FinishStartupBrightness();
+        }
+
+        // Letter-spaced text centred on x.
+        private static void SpacedCentred(float centre, float y, string text, GUIStyle style, Color color, float spacing)
+        {
+            float width = -spacing;
+            foreach (char c in text)
+                width += style.CalcSize(new GUIContent(c.ToString())).x / UiScale + spacing;
+            Spaced(centre - width * .5f, y, text, style, color, spacing);
+        }
+
         private void PreviewEffects()
         {
             if (effectsPreview == null || Time.unscaledTime - lastPreview < .25f)
@@ -450,23 +545,22 @@ namespace ProjectR
 
         // ------------------------------------------------------------------ widgets
 
-        // "P R O J E C T  R" in Cinzel, the last letter in dried-blood red, with a faint line underneath.
+        // "P R O J E C T  R" in Cinzel, the last letter in dried-blood red, a faint line underneath and DEMO below it.
         private void DrawGameTitle(float x, float y)
         {
-            float spacing = titleStyle.fontSize * .16f;
+            float spacing = TitleSize * .16f;
             x = Spaced(x, y, "PROJECT", titleStyle, Ink, spacing);
-            x += titleStyle.fontSize * .45f;
-            x = Spaced(x, y, "R", titleStyle, Blood, spacing);
-            x += titleStyle.fontSize * .4f;
-            Spaced(x, y + titleStyle.fontSize * .62f, "DEMO", creditStyle, new Color(Blood.r, Blood.g, Blood.b, .9f), creditStyle.fontSize * .45f);
-            Fill(new Rect(Left + 2f, y + titleStyle.fontSize * 1.32f, 140f, 1f), new Color(Ink.r, Ink.g, Ink.b, .28f));
+            x += TitleSize * .45f;
+            Spaced(x, y, "R", titleStyle, Blood, spacing);
+            Fill(new Rect(Left + 2f, y + TitleSize * 1.32f, 140f, 1f), new Color(Ink.r, Ink.g, Ink.b, .28f));
+            Spaced(Left + 2f, y + TitleSize * 1.32f + 10f, "DEMO", demoStyle, new Color(Blood.r, Blood.g, Blood.b, .9f), DemoSize * .55f);
         }
 
         private void Heading(ref float y, string text)
         {
-            Spaced(Left, y, text, headingStyle, Ink, headingStyle.fontSize * .18f);
-            Fill(new Rect(Left + 2f, y + headingStyle.fontSize * 1.45f, 90f, 1f), new Color(Ink.r, Ink.g, Ink.b, .25f));
-            y += headingStyle.fontSize * 2.4f;
+            Spaced(Left, y, text, headingStyle, Ink, HeadingSize * .18f);
+            Fill(new Rect(Left + 2f, y + HeadingSize * 1.45f, 90f, 1f), new Color(Ink.r, Ink.g, Ink.b, .25f));
+            y += HeadingSize * 2.4f;
         }
 
         // Draws text one letter at a time so it can be letter-spaced; returns the x after the last letter.
@@ -477,8 +571,8 @@ namespace ProjectR
             foreach (char c in text)
             {
                 var content = new GUIContent(c.ToString());
-                Vector2 size = style.CalcSize(content);
-                GUI.Label(new Rect(x, y, size.x + 4f, size.y), content, style);
+                Vector2 size = style.CalcSize(content) / UiScale;
+                GUI.Label(Px(new Rect(x, y, size.x + 4f, size.y)), content, style);
                 x += size.x + spacing;
             }
             GUI.contentColor = previous;
@@ -492,11 +586,11 @@ namespace ProjectR
             int id = itemId++;
             float left = x ?? Left;
             GUIStyle style = spaced ? itemSpacedStyle : itemStyle;
-            float width = spaced ? style.fontSize * text.Length * 1.05f + 40f : style.CalcSize(new GUIContent(text)).x + 40f;
+            float width = spaced ? ItemSize * text.Length * 1.05f + 40f : style.CalcSize(new GUIContent(text)).x / UiScale + 40f;
             var rect = new Rect(left, y, width, ItemHeight);
             y += ItemHeight + 6f;
 
-            bool over = rect.Contains(Event.current.mousePosition);
+            bool over = rect.Contains(MousePoint);
             if (Event.current.type == EventType.Repaint)
             {
                 if (over && hovered != id)
@@ -519,17 +613,17 @@ namespace ProjectR
                 }
                 var color = new Color(Ink.r, Ink.g, Ink.b, alpha);
                 if (spaced)
-                    Spaced(left, rect.y + (ItemHeight - style.fontSize * 1.35f) * .5f, text, style, color, 4f);
+                    Spaced(left, rect.y + (ItemHeight - ItemSize * 1.35f) * .5f, text, style, color, 4f);
                 else
                 {
                     Color previous = GUI.contentColor;
                     GUI.contentColor = color;
-                    GUI.Label(rect, text, style);
+                    GUI.Label(Px(rect), text, style);
                     GUI.contentColor = previous;
                 }
             }
 
-            if (GUI.Button(rect, GUIContent.none, GUIStyle.none))
+            if (GUI.Button(Px(rect), GUIContent.none, GUIStyle.none))
             {
                 PlayUi(uiSelect, .9f);
                 return true;
@@ -539,16 +633,16 @@ namespace ProjectR
 
         private float Slider(ref float y, string label, float value, float min, float max, System.Func<float, string> format)
         {
-            float width = Mathf.Min(460f, UnityEngine.Screen.width - Left * 2f);
-            GUI.Label(new Rect(Left, y, width * .32f, 32f), label, labelStyle);
+            float width = Mathf.Min(460f, ViewWidth - Left * 2f);
+            GUI.Label(Px(new Rect(Left, y, width * .32f, 32f)), label, labelStyle);
 
             var track = new Rect(Left + width * .34f, y + 16f, width * .5f, 1.5f);
             float t = Mathf.InverseLerp(min, max, value);
             Fill(track, new Color(Ink.r, Ink.g, Ink.b, .22f));
             Fill(new Rect(track.x, track.y, track.width * t, track.height), new Color(Ink.r, Ink.g, Ink.b, .75f));
-            float result = GUI.HorizontalSlider(new Rect(track.x, y + 9f, track.width, 16f), value, min, max, sliderStyle, thumbStyle);
+            float result = GUI.HorizontalSlider(Px(new Rect(track.x, y + 9f, track.width, 16f)), value, min, max, sliderStyle, thumbStyle);
 
-            GUI.Label(new Rect(Left + width * .86f, y, width * .14f, 32f), format(result), valueStyle);
+            GUI.Label(Px(new Rect(Left + width * .86f, y, width * .14f, 32f)), format(result), valueStyle);
             y += 48f;
             return result;
         }
@@ -562,11 +656,11 @@ namespace ProjectR
         private static void LeftGradient(float alpha, float reach)
         {
             const int strips = 48;
-            float total = UnityEngine.Screen.width * reach, strip = total / strips;
+            float total = ViewWidth * reach, strip = total / strips;
             for (int i = 0; i < strips; i++)
             {
                 float a = alpha * (1f - (float)i / strips);
-                Fill(new Rect(i * strip, 0f, strip + 1f, UnityEngine.Screen.height), new Color(0f, 0f, 0f, a * a / alpha));
+                Fill(new Rect(i * strip, 0f, strip + 1f, ViewHeight), new Color(0f, 0f, 0f, a * a / alpha));
             }
         }
 
@@ -574,14 +668,20 @@ namespace ProjectR
         {
             Color previous = GUI.color;
             GUI.color = color * previous; // keeps any fade set around the call
-            GUI.DrawTexture(rect, Texture2D.whiteTexture);
+            Rect px = Px(rect);
+            if (px.height < 1f) px.height = 1f; // hairlines stay visible on small screens
+            if (px.width < 1f) px.width = 1f;
+            GUI.DrawTexture(px, Texture2D.whiteTexture);
             GUI.color = previous;
         }
 
         private void CreateStyles()
         {
-            if (titleStyle != null)
+            float s = UiScale;
+            if (titleStyle != null && Mathf.Approximately(stylesScale, s))
                 return;
+            stylesScale = s;
+            int Size(int reference) => Mathf.Max(1, Mathf.RoundToInt(reference * s));
 
             Font ui = uiFont;
             if (ui == null)
@@ -591,31 +691,39 @@ namespace ProjectR
                 ui = GUI.skin.font;
             Font display = titleFont != null ? titleFont : ui;
 
-            titleStyle = new GUIStyle(GUI.skin.label) { font = display, fontSize = 66, alignment = TextAnchor.UpperLeft, wordWrap = false };
+            titleStyle = new GUIStyle(GUI.skin.label) { font = display, fontSize = Size(TitleSize), alignment = TextAnchor.UpperLeft, wordWrap = false };
             titleStyle.normal.textColor = Color.white;
-            headingStyle = new GUIStyle(titleStyle) { fontSize = 30 };
+            headingStyle = new GUIStyle(titleStyle) { fontSize = Size(HeadingSize) };
 
-            itemStyle = new GUIStyle(GUI.skin.label) { font = ui, fontSize = 20, alignment = TextAnchor.MiddleLeft, wordWrap = false };
+            itemStyle = new GUIStyle(GUI.skin.label) { font = ui, fontSize = Size(ItemSize), alignment = TextAnchor.MiddleLeft, wordWrap = false };
             itemStyle.normal.textColor = Color.white;
             itemSpacedStyle = new GUIStyle(itemStyle) { alignment = TextAnchor.UpperLeft };
 
-            labelStyle = new GUIStyle(GUI.skin.label) { font = ui, fontSize = 17, alignment = TextAnchor.MiddleLeft };
+            labelStyle = new GUIStyle(GUI.skin.label) { font = ui, fontSize = Size(LabelSize), alignment = TextAnchor.MiddleLeft };
             labelStyle.normal.textColor = new Color(Ink.r, Ink.g, Ink.b, .8f);
-            valueStyle = new GUIStyle(labelStyle) { fontSize = 15, alignment = TextAnchor.MiddleRight };
+            valueStyle = new GUIStyle(labelStyle) { fontSize = Size(SmallSize), alignment = TextAnchor.MiddleRight };
             valueStyle.normal.textColor = new Color(Ink.r, Ink.g, Ink.b, .55f);
-            hintStyle = new GUIStyle(labelStyle) { fontSize = 15, alignment = TextAnchor.MiddleCenter };
+            hintStyle = new GUIStyle(labelStyle) { fontSize = Size(SmallSize), alignment = TextAnchor.MiddleCenter };
             hintStyle.normal.textColor = new Color(.6f, .6f, .58f);
-            subtitleStyle = new GUIStyle(labelStyle) { fontSize = 20 };
+            subtitleStyle = new GUIStyle(labelStyle) { fontSize = Size(SubtitleSize) };
             subtitleStyle.normal.textColor = new Color(Ink.r, Ink.g, Ink.b, .95f);
-            creditStyle = new GUIStyle(titleStyle) { fontSize = 15 }; // small capitals in the title face
-            noticeStyle = new GUIStyle(labelStyle) { fontSize = 21, alignment = TextAnchor.MiddleCenter };
+            creditStyle = new GUIStyle(titleStyle) { fontSize = Size(SmallSize) }; // small capitals in the title face
+            demoStyle = new GUIStyle(titleStyle) { fontSize = Size(DemoSize) };
+            centredLabelStyle = new GUIStyle(labelStyle) { alignment = TextAnchor.MiddleCenter };
+            valueLeftStyle = new GUIStyle(valueStyle) { alignment = TextAnchor.MiddleLeft };
+            noticeStyle = new GUIStyle(labelStyle) { fontSize = Size(NoticeSize), alignment = TextAnchor.MiddleCenter };
             noticeStyle.normal.textColor = new Color(Ink.r, Ink.g, Ink.b, .92f);
 
-            sliderStyle = new GUIStyle { fixedHeight = 16f };
-            thumbStyle = new GUIStyle { fixedWidth = 14f, fixedHeight = 14f, margin = new RectOffset(0, 0, 1, 0) };
-            thumbStyle.normal.background = Circle(new Color(Ink.r, Ink.g, Ink.b, .9f));
-            thumbStyle.hover.background = Circle(Color.white);
-            thumbStyle.active.background = Circle(Color.white);
+            sliderStyle = new GUIStyle { fixedHeight = 16f * s };
+            thumbStyle = new GUIStyle { fixedWidth = 14f * s, fixedHeight = 14f * s, margin = new RectOffset(0, 0, Mathf.RoundToInt(s), 0) };
+            // Rebuilding the styles on a resize must not leak a new set of textures each time.
+            if (knobIdle == null)
+                knobIdle = Circle(new Color(Ink.r, Ink.g, Ink.b, .9f));
+            if (knobLit == null)
+                knobLit = Circle(Color.white);
+            thumbStyle.normal.background = knobIdle;
+            thumbStyle.hover.background = knobLit;
+            thumbStyle.active.background = knobLit;
         }
 
         private static Texture2D Circle(Color color)
